@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 9 — Machines That Act</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–10)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+/* ---- Matrix Watch (HPC breadcrumb) — the teal cousin of .motto ---- */
+.mwatch{border-left:3px solid var(--teal);background:var(--teal-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;margin:11px 0 2px;font-size:9.6pt;color:var(--ink-2)}
+.mwatch b{color:var(--teal-ink)}
+
+/* ---- Day 10 roll-call table ---- */
+table.rollcall{width:100%;border-collapse:collapse;border:1.5px solid var(--rule);border-radius:6px;
+  overflow:hidden;font-size:9pt;margin:2px 0 6px;break-inside:avoid;page-break-inside:avoid}
+table.rollcall th,table.rollcall td{padding:4px 9px;border-top:1px solid var(--rule-2);
+  text-align:left;vertical-align:top}
+table.rollcall th{background:var(--teal-tint);color:var(--teal-ink);font-size:8.3pt;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;border-top:none}
+table.rollcall .f{font-family:var(--mono);font-size:8.4pt;color:var(--ink-2)}
+table.rollcall .ck{text-align:center;color:var(--teal);width:26px}
+
+/* ---- Day 10 full-board list ---- */
+ul.board{display:grid;grid-template-columns:1fr 1fr;gap:5px 22px;margin:9px 0 2px;padding:0;
+  list-style:none}
+ul.board li{display:flex;gap:8px;align-items:baseline;break-inside:avoid}
+ul.board .tick{color:var(--teal);font-weight:700;flex:0 0 auto}
+ul.board .d{color:var(--ink-3);font-size:8.7pt}
+
+/* ---- Day 10 certificate (own page, portrait A4) ---- */
+.certificate{page-break-before:always;break-before:page;border:3px double var(--ink);border-radius:4px;
+  padding:6mm;min-height:236mm;display:flex;margin-top:18px}
+.cert-inner{border:1.5px solid var(--amber);border-radius:3px;flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:14mm 12mm}
+.cert-eyebrow{font-family:var(--mono);letter-spacing:.4em;font-size:11pt;font-weight:700;
+  color:var(--amber-ink);text-transform:uppercase}
+.cert-rule{width:60px;height:3px;background:var(--amber);margin:12px 0 18px}
+.cert-title{font-family:Georgia,"Times New Roman",serif;font-size:29pt;font-weight:700;margin:0;color:var(--ink)}
+.cert-sub{font-size:11pt;color:var(--ink-3);margin:22px 0 6px}
+.cert-name{font-family:Georgia,serif;font-size:16pt;border-bottom:1.4px solid var(--ink);
+  min-width:72%;min-height:30px;margin:2px 0 10px}
+.cert-role{font-size:11.5pt;line-height:1.55;max-width:82%;color:var(--ink-2)}
+.cert-role b{font-size:14pt;color:var(--amber-ink)}
+.cert-mods{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;margin:26px 0 4px;max-width:88%}
+.cert-mods span{font-size:9.6pt;font-weight:600;border:1px solid var(--rule);border-radius:20px;
+  padding:4px 12px;color:var(--ink)}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;width:88%;margin-top:32px;gap:20px}
+.cert-foot .sig{flex:1;text-align:center}
+.cert-foot .sig .line{border-bottom:1.3px solid var(--ink);height:26px;margin-bottom:5px}
+.cert-foot .sig .lbl{font-size:9.3pt;color:var(--ink-3)}
+.cert-foot .dt{flex:1;text-align:center;font-weight:700;padding-bottom:3px;font-size:11pt;color:var(--ink)}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 09</div>
+    <h1>Machines That Act</h1>
+    <div class="sub">Reinforcement learning — learning from reward, not answers</div>
+    <div class="meta">
+      <span class="date">Wednesday · July 29, 2026</span>
+      <span class="chip chip-unlock">Unlocks 🎮 Game Master</span>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">Every model so far learned from examples a human labeled. Today's machine learns with <i>no</i> examples at all — only rewards. It tries, fails, and updates its own instincts. You'll teach an agent to cross a frozen lake with a 64-number Q-table, then scale up to a neural network that balances a pole it has never seen. <span style="color:var(--ink-3)"><i>Previously:</i> you unlocked 💬 Language Lab — tokens, attention, and next-token prediction.</span></p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Trace the <b>RL loop</b>: agent, action, environment, reward</li>
+      <li><span class="cb">☐</span> Build a <b>Q-table</b> — a 64-number instinct</li>
+      <li><span class="cb">☐</span> Balance exploring vs exploiting with <b>ε-greedy</b></li>
+      <li><span class="cb">☐</span> Apply the one-line <b>Q-learning law</b></li>
+      <li><span class="cb">☐</span> See when tables explode → deep Q-networks (<b>DQN</b>)</li>
+      <li><span class="cb">☐</span> Compare before / after CartPole videos</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the concepts</span></h2>
+    <p><b class="hi">The RL loop.</b> An <b>agent</b> in an <b>environment</b> picks an <b>action</b>, receives a <b>reward</b> and a new <b>state</b>, and repeats. There is no answer key — only the score it is trying to grow.</p>
+    <figure class="diagram">
+      <svg viewBox="0 0 500 150" role="img" aria-label="The reinforcement-learning loop between agent and environment"><rect x="34" y="48" width="140" height="58" rx="10" fill="#FBF3E7" stroke="#B8722C" stroke-width="1.8"/><text x="104" y="74" text-anchor="middle" font-family="Segoe UI,Arial" font-size="12.5" font-weight="700" fill="#8A511C">Agent</text><text x="104" y="92" text-anchor="middle" font-family="Segoe UI,Arial" font-size="8.7" fill="#6C7284">the learner</text><rect x="326" y="48" width="140" height="58" rx="10" fill="#E7F2F3" stroke="#0E7C86" stroke-width="1.8"/><text x="396" y="74" text-anchor="middle" font-family="Segoe UI,Arial" font-size="12.5" font-weight="700" fill="#0B626B">Environment</text><text x="396" y="92" text-anchor="middle" font-family="Segoe UI,Arial" font-size="8.7" fill="#6C7284">the world</text><path d="M178 60 C 240 36 260 36 322 60" fill="none" stroke="#6C7284" stroke-width="1.7" marker-end="url(#r1)"/><path d="M322 94 C 260 118 240 118 178 94" fill="none" stroke="#6C7284" stroke-width="1.7" marker-end="url(#r2)"/><defs><marker id="r1" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#6C7284"/></marker><marker id="r2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#6C7284"/></marker></defs><text x="250" y="30" text-anchor="middle" font-family="Segoe UI,Arial" font-size="10" font-weight="700" fill="#8A511C">action</text><text x="250" y="130" text-anchor="middle" font-family="Segoe UI,Arial" font-size="10" font-weight="700" fill="#0B626B">reward + new state</text></svg>
+      <figcaption>The loop: the agent picks an action; the environment answers with a reward and a new state. Repeat thousands of times.</figcaption>
+    </figure>
+    <p><b class="hi">The Q-table is a tiny instinct.</b> For FrozenLake there are 16 tiles × 4 moves = 64 numbers, each saying "how good is this move from here?" <b>ε-greedy</b> mostly takes the best-known move (exploit) but a fraction ε of the time tries something random (explore). And the whole thing learns from one line — the <b>Q-learning law</b>: <code>new = old + α(reward + γ·best-future − old)</code>, nudging each estimate a step toward reality.</p>
+    <p><b class="hi">When tables explode → DQN.</b> CartPole's state is continuous — infinite rows. So replace the table with a neural network that <i>predicts</i> Q-values. Same idea, far bigger brain.</p>
+    <div class="mwatch"><b>🧮 Matrix Watch —</b> your Q-table is a 16×4 matrix, and the DQN that replaces it is just layers of matrix multiplies predicting the same Q-values. Same operation, bigger — and Week 3 makes it fast.</div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">check each off in the notebook</span></h2>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">How far does pure luck get?</span>
+        <span class="m-desc">Run a purely random agent on FrozenLake many times.</span>
+        <span class="expect"><b>Expect:</b> it reach the gift only rarely — luck is a bad strategy.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Explore vs exploit (choose_action)</span>
+        <span class="m-desc">Pick a random move with probability ε, else <code>argmax(q[s])</code>.</span>
+        <span class="expect"><b>Expect:</b> the agent wander early and act decisively later.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Start bold, end wise (get_epsilon)</span>
+        <span class="m-desc">Decay ε from near 1 toward near 0 over training.</span>
+        <span class="expect"><b>Expect:</b> exploration high at first, then fading as it learns.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Train the agent (the crown jewel) 👑</span>
+        <span class="m-desc">Apply the one-line Q-update across thousands of episodes.</span>
+        <span class="expect"><b>Expect:</b> the Q-table sharpen until it solves the lake.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">How good did it get?</span>
+        <span class="m-desc">Evaluate the greedy policy's success rate.</span>
+        <span class="expect"><b>Expect:</b> near-100% on the non-slippery lake.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Read out the policy</span>
+        <span class="m-desc">Print the best action per state as arrows.</span>
+        <span class="expect"><b>Expect:</b> a little arrow map that walks straight to the goal.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">The CartPole baseline</span>
+        <span class="m-desc">Compare an untrained agent to your trained DQN.</span>
+        <span class="expect"><b>Expect:</b> a few wobbly steps vs a pole balanced toward 500.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">Q-learning &amp; Gym</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">gym.make("FrozenLake-v1", is_slippery=False)</td><td class="exp">Create the frozen-lake world.</td></tr>
+      <tr><td class="code">s, info = env.reset(seed=0)</td><td class="exp">Start a fresh episode.</td></tr>
+      <tr><td class="code">s, r, term, trunc, info = env.step(a)</td><td class="exp">Take action a; get the 5-tuple back.</td></tr>
+      <tr><td class="code">np.argmax(q[s])</td><td class="exp">Greedy move: the best-known action from state s.</td></tr>
+      <tr><td class="code">q[s,a] += α*(r + γ*q[s2].max() - q[s,a])</td><td class="exp">The Q-learning law, in one line.</td></tr>
+      <tr><td class="code">DQN("MlpPolicy", env).learn(60_000)</td><td class="exp">A neural network replaces the table.</td></tr>
+      <tr><td class="code">model.save("game_master_dqn.zip")</td><td class="exp">Freeze the trained agent to a file.</td></tr>
+      <tr><td class="code">imageio.mimsave("run.gif", frames, fps=25)</td><td class="exp">Turn rendered frames into a replay GIF.</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">5</span> 🔓 Unlock your Studio module</h2>
+    <div class="unlock">
+      <h3>🎮 Game Master</h3>
+      <p style="margin:0 0 2px;color:var(--ink-2)">Save your Q-table and your trained DQN. The unlock cell must write exactly:</p>
+      <div class="files"><b>ai_studio/models/game_master_qtable.npy</b> <b>ai_studio/models/game_master_dqn.zip</b></div>
+      <p style="margin:2px 0 6px;color:var(--ink-2)">Watch both agents replay live — the icy walk and the balancing pole:</p>
+      <div class="cmd"><span class="p">$</span> python ai_studio/app.py</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>agent</dt><dd>The learner that chooses actions.</dd></div>
+      <div class="g"><dt>environment</dt><dd>The world that answers with rewards and states.</dd></div>
+      <div class="g"><dt>state</dt><dd>A snapshot of the situation the agent is in.</dd></div>
+      <div class="g"><dt>action</dt><dd>A move the agent can make.</dd></div>
+      <div class="g"><dt>reward</dt><dd>The score signal the agent tries to maximize.</dd></div>
+      <div class="g"><dt>policy</dt><dd>The agent's strategy for choosing actions.</dd></div>
+      <div class="g"><dt>Q-value</dt><dd>The estimated long-term value of an action in a state.</dd></div>
+      <div class="g"><dt>ε-greedy</dt><dd>Mostly exploit the best move, sometimes explore a random one.</dd></div>
+      <div class="g"><dt>DQN</dt><dd>A deep Q-network — a neural net replacing the Q-table.</dd></div>
+    </dl>
+  </section>
+
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>Walk us through your Q-learning update line — what does each term actually do?</li>
+      <li>What ε did you use, and what happened when you set ε = 0 (pure greedy)?</li>
+      <li>Show random vs trained CartPole. How many steps did each survive, and why the gap?</li>
+    </ol>
+  </section>
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 9 of 10 · Machines That Act · no labels, just rewards
+  </div>
+
+</div>
+</body>
+</html>

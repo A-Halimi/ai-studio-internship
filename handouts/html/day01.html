@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 1 — Welcome to the Lab</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–5)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px;
+  break-after:avoid;page-break-after:avoid}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 01</div>
+    <h1>Welcome to the Lab</h1>
+    <div class="sub">The Data Detective &amp; Meet the Machines</div>
+    <div class="meta">
+      <span class="date">Sunday · July 19, 2026</span>
+      <span class="chip chip-neutral">Setup day · meet your (locked) AI Studio</span>
+    </div>
+  </header>
+
+  <!-- ① MISSION -->
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">Welcome, recruit. Before we hand you a neural network, prove you can <b>read data</b> — every
+    AI system is built on it, and a researcher who can't read their data ships broken models. This morning a crate of
+    penguin measurements landed from an Antarctic field station: interrogate it. Then, as a reward, you'll play with
+    four <b>finished</b> AI machines — the very ones you'll rebuild yourself over the next two weeks.</p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Load a real dataset with <b>pandas</b> and size it up</li>
+      <li><span class="cb">☐</span> Hunt down <b>missing values</b> and clean the data</li>
+      <li><span class="cb">☐</span> <b>Filter, group, count</b> to answer real questions</li>
+      <li><span class="cb">☐</span> <b>Plot</b> the data and spot a learnable pattern</li>
+      <li><span class="cb">☐</span> See the <b>map of AI</b> (ML, deep learning, superpowers)</li>
+      <li><span class="cb">☐</span> Run four <b>pretrained</b> models — and try to fool them</li>
+      <li><span class="cb">☐</span> Meet the <b>AI Studio</b> you'll fill one tab per day</li>
+    </ul>
+  </section>
+
+  <!-- ② FIELD GUIDE -->
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the concepts</span></h2>
+    <p><b class="hi">AI, machine learning, deep learning</b> aren't synonyms — they nest like Russian dolls.
+    <b>Artificial intelligence</b> is any program we'd call smart; <b>machine learning</b> is the slice that
+    isn't hand-coded but <i>learns patterns from data</i>; <b>deep learning</b> is machine learning with neural
+    networks stacked many layers deep. There are three ways to learn: with labels (<b>supervised</b>), without
+    (<b>unsupervised</b>), or by reward (<b>reinforcement</b>).</p>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 500 168" role="img" aria-label="Nested boxes: AI contains machine learning contains deep learning">
+        <rect x="8" y="10" width="308" height="150" rx="12" fill="#EDF5F6" stroke="#B4D9DD" stroke-width="1.5"/>
+        <text x="22" y="30" font-family="Segoe UI, Arial" font-size="11" font-weight="700" letter-spacing="0.5" fill="#0B626B">ARTIFICIAL INTELLIGENCE</text>
+        <rect x="30" y="44" width="264" height="104" rx="10" fill="#DDEFF0" stroke="#8FCACF" stroke-width="1.3"/>
+        <text x="44" y="63" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#0B626B">Machine learning</text>
+        <rect x="52" y="76" width="204" height="58" rx="8" fill="#C7E6E8" stroke="#6FBEC4" stroke-width="1.3"/>
+        <text x="66" y="99" font-family="Segoe UI, Arial" font-size="10" font-weight="700" fill="#09545B">Deep learning</text>
+        <text x="66" y="115" font-family="Segoe UI, Arial" font-size="8.5" font-style="italic" fill="#3B7A80">neural nets, many layers</text>
+        <text x="338" y="30" font-family="Segoe UI, Arial" font-size="9.6" font-weight="700" fill="#1A1D26">Three ways to learn</text>
+        <rect x="338" y="45" width="9" height="9" rx="1.5" fill="#B8722C"/>
+        <text x="354" y="53" font-family="Segoe UI, Arial" font-size="9.4" font-weight="700" fill="#1A1D26">Supervised</text>
+        <text x="354" y="66" font-family="Segoe UI, Arial" font-size="8.4" fill="#6C7284">labeled examples · Day 2</text>
+        <rect x="338" y="81" width="9" height="9" rx="1.5" fill="#B8722C"/>
+        <text x="354" y="89" font-family="Segoe UI, Arial" font-size="9.4" font-weight="700" fill="#1A1D26">Unsupervised</text>
+        <text x="354" y="102" font-family="Segoe UI, Arial" font-size="8.4" fill="#6C7284">no labels · Day 3</text>
+        <rect x="338" y="117" width="9" height="9" rx="1.5" fill="#B8722C"/>
+        <text x="354" y="125" font-family="Segoe UI, Arial" font-size="9.4" font-weight="700" fill="#1A1D26">Reinforcement</text>
+        <text x="354" y="138" font-family="Segoe UI, Arial" font-size="8.4" fill="#6C7284">trial &amp; reward · Day 9</text>
+      </svg>
+      <figcaption>AI ⊃ machine learning ⊃ deep learning — and the three ways a machine can learn.</figcaption>
+    </figure>
+
+    <p><b class="hi">How ML data is shaped.</b> Almost all of it is a table: one <b>row</b> per example (one penguin),
+    one <b>column</b> per <b>feature</b> you measured (bill length, mass). Sometimes one column is the <b>label</b> —
+    the answer you'll teach a machine to predict. Today's demos also use <b>pretrained</b> models: giant networks
+    someone else trained, that you simply borrow.</p>
+    <p class="motto">The Lab's motto: understand your data <i>before</i> you model it.</p>
+  </section>
+
+  <!-- ③ MISSIONS -->
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">check each off in the notebooks</span></h2>
+
+    <div class="subhead">Notebook 1a · The Data Detective</div>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Count the gaps</span>
+        <span class="m-desc">Tally missing values per column with <code>penguins.isna().sum()</code>.</span>
+        <span class="expect"><b>Expect:</b> 19 missing values in all — a few measurements, about a dozen unknown sexes.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">The heavyweights</span>
+        <span class="m-desc">Filter for penguins heavier than 5000 g.</span>
+        <span class="expect"><b>Expect:</b> about 60 birds — and nearly all the same species. Remember which.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">The average penguin, by species</span>
+        <span class="m-desc"><code>groupby("species").mean(numeric_only=True)</code>.</span>
+        <span class="expect"><b>Expect:</b> one row per species, Gentoo biggest on almost every measurement.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Who lives where?</span>
+        <span class="m-desc">Count penguins per island with <code>value_counts()</code>.</span>
+        <span class="expect"><b>Expect:</b> Biscoe, Dream, Torgersen — Biscoe hosts the most.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">The scatter plot that changes everything</span>
+        <span class="m-desc">Plot bill length vs bill depth, one color per species.</span>
+        <span class="expect"><b>Expect:</b> three fairly distinct blobs — structure a machine could learn.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">What moves together?</span>
+        <span class="m-desc">Correlation matrix of the four measurements, drawn as a heatmap.</span>
+        <span class="expect"><b>Expect:</b> flipper length ↔ body mass is the brightest pair, about +0.87.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Close the case</span>
+        <span class="m-desc">Answer three questions with one line of pandas each.</span>
+        <span class="expect"><b>Expect:</b> Gentoo (heaviest), Biscoe (most Gentoo), 195.8 mm (Chinstrap flipper).</span></li>
+    </ol>
+
+    <div class="subhead">Notebook 1b · Meet the Machines</div>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Fool the mood reader</span>
+        <span class="m-desc">Write a sarcastic line that <i>sounds</i> happy but means the opposite.</span>
+        <span class="expect"><b>Goal:</b> get the sentiment model to answer POSITIVE for a clear complaint.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Be the author</span>
+        <span class="m-desc">Give GPT-2 your own opening line and generate.</span>
+        <span class="expect"><b>Expect:</b> a different story each run (sampling is random).</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Invent the categories</span>
+        <span class="m-desc">Hand the zero-shot sorter your own text and labels.</span>
+        <span class="expect"><b>Try:</b> a sentence that could belong to two categories at once.</span></li>
+    </ol>
+  </section>
+
+  <!-- ④ CHEAT SHEET -->
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">the detective's toolkit</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">pd.read_csv(path)</td><td class="exp">Load a CSV file into a DataFrame</td></tr>
+      <tr><td class="code">df.head() · df.info() · df.describe()</td><td class="exp">Peek at rows · column types &amp; nulls · number stats</td></tr>
+      <tr><td class="code">df.isna().sum()</td><td class="exp">Count missing values in each column</td></tr>
+      <tr><td class="code">df.dropna()</td><td class="exp">Drop every row that has a missing value</td></tr>
+      <tr><td class="code">df[df["body_mass_g"] &gt; 5000]</td><td class="exp">Keep only the rows matching a condition</td></tr>
+      <tr><td class="code">df.groupby("species").mean(numeric_only=True)</td><td class="exp">Average each numeric column per group</td></tr>
+      <tr><td class="code">df["island"].value_counts()</td><td class="exp">Tally how often each value appears</td></tr>
+      <tr><td class="code">df[cols].corr()</td><td class="exp">Correlation matrix (−1 … +1) of the columns</td></tr>
+      <tr><td class="code">plt.scatter(x, y, label=name)</td><td class="exp">One dot per row; loop species to color them</td></tr>
+      <tr><td class="code">pipeline("text-classification", model=…)</td><td class="exp">Load &amp; run a pretrained model in one line</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ⑤ what's unlocked (Day 1: the wall) -->
+  <section>
+    <div class="unlock">
+      <h3>🔒 No module today — the padlock wall <i>is</i> the mission</h3>
+      <p style="margin:0;color:var(--amber-ink)">Peek at the app you're about to build. From the repo root run:</p>
+      <div class="cmd"><span class="p">$</span> python ai_studio/app.py</div>
+      <p style="margin:8px 0 0;color:var(--ink-2);font-size:9.6pt">Every tab shows 🔒 — you haven't built anything yet.
+      One notebook unlocks one tab: <b>Day 2 →</b> 🐧 Prediction Machine, <b>Day 3 →</b> 🎨 Pattern Finder,
+      <b>Day 5 →</b> ✍️ Digit Reader, and on to Demo Day, when every lock is gone.</p>
+    </div>
+  </section>
+
+  <!-- ⑥ GLOSSARY -->
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>dataset</dt><dd>A table you learn from — rows are examples, columns are what you measured.</dd></div>
+      <div class="g"><dt>feature</dt><dd>One input measurement (a column), e.g. bill length.</dd></div>
+      <div class="g"><dt>label</dt><dd>The answer you want to predict (e.g. species). Present in supervised data.</dd></div>
+      <div class="g"><dt>DataFrame</dt><dd>pandas' programmable spreadsheet — the <code>df</code> object.</dd></div>
+      <div class="g"><dt>pretrained model</dt><dd>A network already trained on huge data that you borrow as-is.</dd></div>
+      <div class="g"><dt>notebook kernel</dt><dd>The live Python process running your cells; restarting it wipes memory.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ⑦ TONIGHT -->
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>Share <b>one plot</b> you made and the single <b>insight</b> it revealed.</li>
+      <li>Which AI <b>superpower</b> impressed you most — and which one did you manage to <b>fool</b>?</li>
+      <li>What's the one <b>burning question</b> about AI you want answered by Demo Day?</li>
+    </ol>
+  </section>
+
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 1 of 10 · Welcome to the Lab · keep this sheet on your desk
+  </div>
+
+</div>
+</body>
+</html>

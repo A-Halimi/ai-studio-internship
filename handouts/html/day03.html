@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 3 — The Pattern Finder</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–5)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px;
+  break-after:avoid;page-break-after:avoid}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 03</div>
+    <h1>The Pattern Finder</h1>
+    <div class="sub">Finding hidden patterns — with no labels at all</div>
+    <div class="meta">
+      <span class="date">Tuesday · July 21, 2026</span>
+      <span class="chip chip-unlock">Unlocks 🎨 Pattern Finder</span>
+    </div>
+  </header>
+
+  <!-- ① MISSION -->
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">A crate lands in the Lab with no label — thousands of measurements and <b>nobody</b> to say what they
+    mean. No answer key, no teacher. Find the hidden structure yourself. <span style="color:var(--ink-3)"><i>Previously:</i>
+    you trained the Prediction Machine to name species from labeled examples. Today the labels are gone.</span> This is
+    <b>unsupervised learning</b>, and by tonight it powers your Studio's newest module.</p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Tell <b>supervised</b> (answer key) from <b>unsupervised</b> (none) apart</li>
+      <li><span class="cb">☐</span> Run <b>k-means</b> to discover groups no one named</li>
+      <li><span class="cb">☐</span> Watch it <b>rediscover the penguin species</b> with zero labels</li>
+      <li><span class="cb">☐</span> Use the <b>elbow method</b> to guess how many groups exist</li>
+      <li><span class="cb">☐</span> Build a photo <b>color-compressor</b> with k-means</li>
+      <li><span class="cb">☐</span> Squash 4-D and 64-D data into pictures with <b>PCA</b> &amp; <b>t-SNE</b></li>
+    </ul>
+  </section>
+
+  <!-- ② FIELD GUIDE -->
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the concepts</span></h2>
+    <p><b class="hi">Unsupervised learning</b> finds structure with no labels to copy. The workhorse is <b>k-means</b>.
+    Picture three pizza shops opening in a new city with no map of customers. They play a two-move game, over and over:
+    every customer orders from the <b>nearest</b> shop, then each shop moves to the <b>center</b> of the customers it just
+    served. Repeat and the shops drift into the middle of three natural neighborhoods. Swap "shop" for <b>centroid</b>
+    and "customer" for data point and that's the whole algorithm — <i>k</i> is how many shops you place.</p>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 500 150" role="img" aria-label="The k-means loop: assign points to nearest centroid, then update centroids to the mean">
+        <!-- step 1 box -->
+        <rect x="20" y="34" width="180" height="80" rx="9" fill="#E1F0F1" stroke="#8FCACF" stroke-width="1.3"/>
+        <text x="110" y="58" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#0B626B">① Assign</text>
+        <text x="110" y="76" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.7" fill="#3B7A80">each point joins its</text>
+        <text x="110" y="88" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.7" fill="#3B7A80">nearest centroid</text>
+        <!-- step 2 box -->
+        <rect x="300" y="34" width="180" height="80" rx="9" fill="#FBF3E7" stroke="#EBD2AC" stroke-width="1.3"/>
+        <text x="390" y="58" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#8A511C">② Update</text>
+        <text x="390" y="76" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.7" fill="#8A511C">each centroid hops to</text>
+        <text x="390" y="88" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.7" fill="#8A511C">the mean of its points</text>
+        <!-- arrows -->
+        <defs>
+          <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#6C7284"/>
+          </marker>
+        </defs>
+        <path d="M204,58 C250,42 254,42 296,58" fill="none" stroke="#6C7284" stroke-width="1.6" marker-end="url(#ah)"/>
+        <path d="M296,92 C254,108 250,108 204,92" fill="none" stroke="#6C7284" stroke-width="1.6" marker-end="url(#ah)"/>
+        <text x="250" y="132" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" font-style="italic" fill="#6C7284">repeat until the centroids stop moving</text>
+      </svg>
+      <figcaption>k-means alternates <b>assign</b> ↔ <b>update</b> until it settles. Standardize features first so neither dominates.</figcaption>
+    </figure>
+
+    <p><b class="hi">Seeing high dimensions.</b> A color is just a 3-D point (its R, G, B) — so k-means on a photo's pixels
+    finds its palette and repaints it with a few colors (<b>compression</b>). And when data has 4 or 64 dimensions,
+    <b>PCA</b> casts the most informative 2-D "shadow", while <b>t-SNE</b> untangles curvier structure into a map you can
+    actually look at.</p>
+  </section>
+
+  <!-- ③ MISSIONS -->
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">check each off in the notebook</span></h2>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Let scikit-learn do the clustering</span>
+        <span class="m-desc"><code>KMeans(n_clusters=3, n_init=10)</code> on two standardized measurements.</span>
+        <span class="expect"><b>Expect:</b> three clean blobs with red-X centroids.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">The reveal: did it find the species?</span>
+        <span class="m-desc">Cross-tabulate the clusters against the <i>true</i> species.</span>
+        <span class="expect"><b>Expect:</b> each cluster lines up mostly with one species — with zero labels.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Find the elbow</span>
+        <span class="m-desc">Record <code>.inertia_</code> for k = 1…8 and plot it.</span>
+        <span class="expect"><b>Expect:</b> the curve drops steeply, then bends around k = 3.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Compress the photo to 8 colors</span>
+        <span class="m-desc">Fit k-means on a pixel sample, then <code>.predict</code> every pixel.</span>
+        <span class="expect"><b>Expect:</b> the repaint still looks like the photo — in only 8 colors.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">How few colors can you get away with?</span>
+        <span class="m-desc">Repaint at k = 3, 8, 16 and compare.</span>
+        <span class="expect"><b>Expect:</b> k = 3 loses subtle shades; 8 vs 16 barely differ.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Flatten 4-D penguins onto a 2-D page</span>
+        <span class="m-desc"><code>PCA(n_components=2)</code> on all four measurements.</span>
+        <span class="expect"><b>Expect:</b> the 2-D shadow keeps well over 80% of the information.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Draw the map</span>
+        <span class="m-desc">Scatter the t-SNE embedding of 8×8 digit images, colored by digit.</span>
+        <span class="expect"><b>Expect:</b> roughly ten islands — one per digit, unprompted.</span></li>
+    </ol>
+  </section>
+
+  <!-- ④ CHEAT SHEET -->
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">clustering &amp; dimensionality reduction</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">KMeans(n_clusters=k, n_init=10).fit(X)</td><td class="exp">Run assign/update until centroids settle</td></tr>
+      <tr><td class="code">km.fit_predict(X)</td><td class="exp">Fit and return a cluster number per point</td></tr>
+      <tr><td class="code">km.labels_ · km.cluster_centers_</td><td class="exp">Each point's cluster · the centroid positions</td></tr>
+      <tr><td class="code">km.inertia_</td><td class="exp">Tightness of clusters (lower = tighter) — for the elbow</td></tr>
+      <tr><td class="code">km.predict(pixels)</td><td class="exp">Label new points using a fitted model</td></tr>
+      <tr><td class="code">pd.crosstab(clusters, truth)</td><td class="exp">Compare clusters to real labels in a grid</td></tr>
+      <tr><td class="code">StandardScaler().fit_transform(X)</td><td class="exp">Rescale so no feature dominates the distance</td></tr>
+      <tr><td class="code">PCA(n_components=2).fit_transform(X)</td><td class="exp">Best 2-D shadow; <code>.explained_variance_ratio_</code></td></tr>
+      <tr><td class="code">TSNE(n_components=2, perplexity=30)</td><td class="exp">Untangle high-D data into a 2-D map</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ⑤ UNLOCK -->
+  <section>
+    <h2 class="sec"><span class="sec-n">5</span> 🔓 Unlock your Studio module</h2>
+    <div class="unlock">
+      <h3>🎨 Pattern Finder</h3>
+      <p style="margin:0 0 2px;color:var(--ink-2)">Put your name on your work and pick a default number of colors; the
+      unlock cell saves a small config token. It must write exactly:</p>
+      <div class="files"><b>ai_studio/models/pattern_finder.json</b></div>
+      <p style="margin:2px 0 6px;color:var(--ink-2)">The clustering runs <i>live</i> in the app — upload any photo and it
+      finds the dominant colors:</p>
+      <div class="cmd"><span class="p">$</span> python ai_studio/app.py</div>
+    </div>
+  </section>
+
+  <!-- ⑥ GLOSSARY -->
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>unsupervised learning</dt><dd>Finding structure in data that has no labels to check against.</dd></div>
+      <div class="g"><dt>cluster</dt><dd>A group of points that resemble each other more than the rest.</dd></div>
+      <div class="g"><dt>centroid</dt><dd>A cluster's center — the mean of the points assigned to it.</dd></div>
+      <div class="g"><dt>inertia</dt><dd>How tightly points hug their centroid; smaller means tighter clusters.</dd></div>
+      <div class="g"><dt>elbow method</dt><dd>Pick k where the inertia curve stops dropping sharply — its "bend".</dd></div>
+      <div class="g"><dt>PCA</dt><dd>Dimensionality reduction that keeps the most-informative straight-line "shadow".</dd></div>
+      <div class="g"><dt>t-SNE</dt><dd>A nonlinear map that pulls similar points together to reveal structure.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ⑦ TONIGHT -->
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>k-means never saw a label — how well did its <b>3 clusters</b> match the real species? Show your crosstab.</li>
+      <li>Show your photo at <b>3, 8, and 16 colors</b>. Where's the sweet spot, and what falls apart at k = 3?</li>
+      <li>Your elbow bent at <b>k = 3</b>. If a mystery dataset bent at k = 5, what would that tell you?</li>
+    </ol>
+  </section>
+
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 3 of 10 · The Pattern Finder · keep this sheet on your desk
+  </div>
+
+</div>
+</body>
+</html>

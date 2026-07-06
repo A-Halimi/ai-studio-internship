@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 5 — The Digit Reader</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–5)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px;
+  break-after:avoid;page-break-after:avoid}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 05</div>
+    <h1>The Digit Reader</h1>
+    <div class="sub">Superpowers: PyTorch + GPU</div>
+    <div class="meta">
+      <span class="date">Thursday · July 23, 2026</span>
+      <span class="chip chip-unlock">Unlocks ✍️ Digit Reader</span>
+    </div>
+  </header>
+
+  <!-- ① MISSION -->
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">Yesterday you hand-built a network's engine in pure NumPy — and felt the pain: ~130 forward passes
+    just to nudge the weights <i>once</i>. Today the Lab issues power tools. <b>PyTorch</b> computes those nudges
+    automatically and exactly, and a <b>GPU</b> runs them at ludicrous speed.
+    <span style="color:var(--ink-3)"><i>Previously:</i> you earned a deep respect for backpropagation — and calluses.</span>
+    Your mission: teach a network to read handwriting, then point it at <i>your own</i>.</p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Meet <b>tensors</b> — arrays that live on a GPU and track history</li>
+      <li><span class="cb">☐</span> Let <b>autograd</b> compute gradients for you</li>
+      <li><span class="cb">☐</span> Train a real network on <b>MNIST</b> handwriting</li>
+      <li><span class="cb">☐</span> Watch a <b>GPU</b> demolish a CPU at matrix multiply</li>
+      <li><span class="cb">☐</span> Upgrade to a <b>convolutional</b> network (CNN)</li>
+      <li><span class="cb">☐</span> Draw your own digit and <b>unlock the Digit Reader</b></li>
+    </ul>
+  </section>
+
+  <!-- ② FIELD GUIDE -->
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the concepts</span></h2>
+    <p><b class="hi">Tensors and autograd.</b> A <b>tensor</b> is a NumPy array with two superpowers: it can live on a
+    <b>GPU</b>, and it remembers its own history. Mark it <code>requires_grad=True</code>, do some math, call
+    <code>.backward()</code>, and PyTorch replays the chain rule to leave the exact gradient in <code>.grad</code> — the
+    same job yesterday's nudge method did, but in <b>two passes instead of 130</b>. Almost every network in the world
+    then trains with the <b>same five-step loop</b>. Burn it into memory:</p>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 500 158" role="img" aria-label="The five-step training loop: zero_grad, forward, loss, backward, step, repeating">
+        <defs>
+          <marker id="a5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L7,4 L0,8 z" fill="#0E7C86"/>
+          </marker>
+        </defs>
+        <!-- 5 steps left to right, then a return arc -->
+        <g font-family="Cascadia Code, Consolas, monospace">
+          <rect x="6" y="42" width="90" height="46" rx="8" fill="#E7F2F3" stroke="#8FCACF" stroke-width="1.3"/>
+          <text x="51" y="60" text-anchor="middle" font-size="8" font-weight="700" fill="#0B626B">1 · zero_grad</text>
+          <text x="51" y="74" text-anchor="middle" font-size="7" fill="#3B7A80">clear old grads</text>
+
+          <rect x="107" y="42" width="90" height="46" rx="8" fill="#E7F2F3" stroke="#8FCACF" stroke-width="1.3"/>
+          <text x="152" y="60" text-anchor="middle" font-size="8" font-weight="700" fill="#0B626B">2 · forward</text>
+          <text x="152" y="74" text-anchor="middle" font-size="7" fill="#3B7A80">model(x) → logits</text>
+
+          <rect x="208" y="42" width="90" height="46" rx="8" fill="#E7F2F3" stroke="#8FCACF" stroke-width="1.3"/>
+          <text x="253" y="60" text-anchor="middle" font-size="8" font-weight="700" fill="#0B626B">3 · loss</text>
+          <text x="253" y="74" text-anchor="middle" font-size="7" fill="#3B7A80">how wrong?</text>
+
+          <rect x="309" y="42" width="90" height="46" rx="8" fill="#FBF3E7" stroke="#EBD2AC" stroke-width="1.3"/>
+          <text x="354" y="60" text-anchor="middle" font-size="8" font-weight="700" fill="#8A511C">4 · backward</text>
+          <text x="354" y="74" text-anchor="middle" font-size="7" fill="#8A511C">autograd fills grads</text>
+
+          <rect x="404" y="42" width="90" height="46" rx="8" fill="#FBF3E7" stroke="#EBD2AC" stroke-width="1.3"/>
+          <text x="449" y="60" text-anchor="middle" font-size="8" font-weight="700" fill="#8A511C">5 · step</text>
+          <text x="449" y="74" text-anchor="middle" font-size="7" fill="#8A511C">nudge weights</text>
+        </g>
+        <!-- forward arrows between boxes -->
+        <path d="M96,65 L105,65" fill="none" stroke="#0E7C86" stroke-width="1.5" marker-end="url(#a5)"/>
+        <path d="M197,65 L206,65" fill="none" stroke="#0E7C86" stroke-width="1.5" marker-end="url(#a5)"/>
+        <path d="M298,65 L307,65" fill="none" stroke="#0E7C86" stroke-width="1.5" marker-end="url(#a5)"/>
+        <path d="M399,65 L402,65" fill="none" stroke="#0E7C86" stroke-width="1.5" marker-end="url(#a5)"/>
+        <!-- return loop arc from step back to zero_grad -->
+        <path d="M449,90 C449,124 51,124 51,90" fill="none" stroke="#0E7C86" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#a5)"/>
+        <text x="250" y="140" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.6" font-style="italic" fill="#6C7284">repeat for every batch, every epoch — even GPT trains on this skeleton</text>
+      </svg>
+      <figcaption>The five lines that train (almost) all of AI. Under the hood it's all the <code>@</code> matrix multiply from Day 4.</figcaption>
+    </figure>
+
+    <p><b class="hi">MNIST, CNNs, and the GPU.</b> You'll train on <b>MNIST</b> — 70,000 handwritten digits — in
+    <b>batches</b>, for a few <b>epochs</b> (full passes), with the <b>Adam</b> optimizer. A plain MLP flattens the image;
+    a <b>convolutional</b> network keeps its 2-D shape and scores higher. And because every step is matrix multiplication,
+    a <b>GPU</b> that does thousands of multiplies at once leaves the CPU in the dust.</p>
+  </section>
+
+  <!-- ③ MISSIONS -->
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">check each off in the notebook</span></h2>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Your first tensors</span>
+        <span class="m-desc">Matrix-multiply a 3×4 and a 4×2 tensor with <code>@</code>.</span>
+        <span class="expect"><b>Expect:</b> <code>C</code> is 3×2 — the shared inner dimension cancels.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Differentiate by yourself (well, by PyTorch)</span>
+        <span class="m-desc">Build <code>y = x**3 + 2*x</code> at x = 3, call <code>y.backward()</code>.</span>
+        <span class="expect"><b>Expect:</b> <code>x.grad</code> is 29 (3x²+2 at x=3).</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Assemble the MLP</span>
+        <span class="m-desc"><code>nn.Sequential</code>: Flatten → Linear(784,128) → ReLU → Linear(128,10).</span>
+        <span class="expect"><b>Expect:</b> a four-layer model, moved onto <code>DEVICE</code>.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Count the parameters</span>
+        <span class="m-desc">Sum <code>p.numel()</code> over <code>mlp.parameters()</code>.</span>
+        <span class="expect"><b>Expect:</b> exactly 101,770 tunable knobs.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Complete the training loop</span>
+        <span class="m-desc">Fill the five gaps: zero_grad → forward → loss → backward → step.</span>
+        <span class="expect"><b>Expect:</b> the printed loss goes down each epoch.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Write <code>evaluate</code></span>
+        <span class="m-desc">A <code>torch.no_grad()</code> loop counting correct <code>argmax</code> predictions.</span>
+        <span class="expect"><b>Expect:</b> MLP test accuracy ≥ 0.95 (~97%).</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Time the matmul</span>
+        <span class="m-desc">Time <code>A @ B</code> on CPU vs GPU (with <code>cuda.synchronize()</code>).</span>
+        <span class="expect"><b>Expect:</b> the GPU obliterates the CPU on big matrices.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Train the CNN by reusing your loop</span>
+        <span class="m-desc">Instantiate <code>SmallCNN</code> and call the same <code>train_model</code>.</span>
+        <span class="expect"><b>Expect:</b> accuracy climbs a couple of points above the MLP.</span></li>
+    </ol>
+  </section>
+
+  <!-- ④ CHEAT SHEET -->
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">PyTorch essentials</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">torch.from_numpy(a) · t.numpy()</td><td class="exp">Bridge between NumPy and torch</td></tr>
+      <tr><td class="code">x = torch.tensor(2., requires_grad=True)</td><td class="exp">Track history so autograd can differentiate</td></tr>
+      <tr><td class="code">y.backward(); x.grad</td><td class="exp">Fill in every gradient in one backward pass</td></tr>
+      <tr><td class="code">tensor.to(DEVICE)</td><td class="exp">Move data / model onto the GPU (or CPU)</td></tr>
+      <tr><td class="code">nn.Sequential(nn.Flatten(), nn.Linear…, nn.ReLU…)</td><td class="exp">Stack layers front to back</td></tr>
+      <tr><td class="code">nn.CrossEntropyLoss() · optim.Adam(…, lr=1e-3)</td><td class="exp">Classification loss · the optimizer</td></tr>
+      <tr><td class="code">zero_grad → model(x) → loss → backward → step</td><td class="exp">The five-line training loop</td></tr>
+      <tr><td class="code">with torch.no_grad(): logits.argmax(dim=1)</td><td class="exp">Evaluate without tracking gradients</td></tr>
+      <tr><td class="code">DataLoader(ds, batch_size=128, shuffle=True)</td><td class="exp">Feed data in shuffled batches</td></tr>
+      <tr><td class="code">torch.jit.trace(model, ex).save("…​.pt")</td><td class="exp">Export a frozen TorchScript model</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ⑤ UNLOCK -->
+  <section>
+    <h2 class="sec"><span class="sec-n">5</span> 🔓 Unlock your Studio module</h2>
+    <div class="unlock">
+      <h3>✍️ Digit Reader</h3>
+      <p style="margin:0 0 2px;color:var(--ink-2)">Export the trained CNN as a self-contained TorchScript file the
+      Studio can load without your training code. It must write exactly:</p>
+      <div class="files"><b>ai_studio/models/digit_reader.pt</b></div>
+      <p style="margin:2px 0 6px;color:var(--ink-2)">Input contract: a <code>(1, 1, 28, 28)</code> tensor, values 0–1,
+      <b>white digit on black</b> (MNIST style — <code>ToTensor</code> only, no normalization). Then:</p>
+      <div class="cmd"><span class="p">$</span> python ai_studio/app.py</div>
+    </div>
+  </section>
+
+  <!-- ⑥ GLOSSARY -->
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>tensor</dt><dd>A NumPy-like array that can run on a GPU and track its own history.</dd></div>
+      <div class="g"><dt>autograd</dt><dd>PyTorch's automatic gradients via one backward pass of the chain rule.</dd></div>
+      <div class="g"><dt>epoch</dt><dd>One full pass over the whole training set.</dd></div>
+      <div class="g"><dt>batch</dt><dd>A small group of examples processed together in one step.</dd></div>
+      <div class="g"><dt>optimizer</dt><dd>The rule (e.g. Adam) that turns gradients into weight updates.</dd></div>
+      <div class="g"><dt>CUDA / GPU</dt><dd>Hardware that does thousands of multiplies in parallel.</dd></div>
+      <div class="g"><dt>TorchScript</dt><dd>A frozen, portable copy of a model, saved as a <code>.pt</code> file.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ⑦ TONIGHT -->
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>What test accuracy did your <b>MLP</b> reach — and how many more digits did the <b>CNN</b> get right?</li>
+      <li>Draw three digits in your Studio's <b>Digit Reader</b>. Which one fooled it, and why do you think it slipped?</li>
+      <li>In the GPU race, how many times faster was the biggest <b>matmul</b>? Tie that back to Weeks 3–4.</li>
+    </ol>
+  </section>
+
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 5 of 10 · The Digit Reader · keep this sheet on your desk
+  </div>
+
+</div>
+</body>
+</html>

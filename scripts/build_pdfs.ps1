@@ -2,8 +2,10 @@
 # using headless Chrome (or Edge as fallback).
 #
 #   powershell -ExecutionPolicy Bypass -File scripts\build_pdfs.ps1
+#
+# Uses Start-Process so Chrome's stderr chatter can't trip PowerShell 5.1's
+# NativeCommandError handling.
 
-$ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 
 $browser = @(
@@ -26,13 +28,15 @@ $failed = 0
 Get-ChildItem (Join-Path $root "handouts\html\*.html") | Sort-Object Name | ForEach-Object {
     $pdf = Join-Path $pdfDir ($_.BaseName + ".pdf")
     $uri = "file:///" + ($_.FullName -replace '\\', '/')
-    & $browser --headless=new --disable-gpu --no-pdf-header-footer `
-        --print-to-pdf="$pdf" $uri 2>$null | Out-Null
-    Start-Sleep -Milliseconds 200
+    $args = @(
+        "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+        "--print-to-pdf=`"$pdf`"", "`"$uri`""
+    )
+    $p = Start-Process -FilePath $browser -ArgumentList $args -Wait -PassThru -WindowStyle Hidden
     if ((Test-Path $pdf) -and ((Get-Item $pdf).Length -gt 10KB)) {
         Write-Host ("  OK    {0,-28} {1,8:n0} KB" -f $_.BaseName, ((Get-Item $pdf).Length / 1KB))
     } else {
-        Write-Host ("  FAIL  {0}" -f $_.BaseName)
+        Write-Host ("  FAIL  {0}  (exit {1})" -f $_.BaseName, $p.ExitCode)
         $script:failed++
     }
 }

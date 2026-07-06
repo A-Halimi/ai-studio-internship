@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 10 — Demo Day and the Road to HPC</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–10)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+/* ---- Matrix Watch (HPC breadcrumb) — the teal cousin of .motto ---- */
+.mwatch{border-left:3px solid var(--teal);background:var(--teal-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;margin:11px 0 2px;font-size:9.6pt;color:var(--ink-2)}
+.mwatch b{color:var(--teal-ink)}
+
+/* ---- Day 10 roll-call table ---- */
+table.rollcall{width:100%;border-collapse:collapse;border:1.5px solid var(--rule);border-radius:6px;
+  overflow:hidden;font-size:9pt;margin:2px 0 6px;break-inside:avoid;page-break-inside:avoid}
+table.rollcall th,table.rollcall td{padding:4px 9px;border-top:1px solid var(--rule-2);
+  text-align:left;vertical-align:top}
+table.rollcall th{background:var(--teal-tint);color:var(--teal-ink);font-size:8.3pt;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;border-top:none}
+table.rollcall .f{font-family:var(--mono);font-size:8.4pt;color:var(--ink-2)}
+table.rollcall .ck{text-align:center;color:var(--teal);width:26px}
+
+/* ---- Day 10 full-board list ---- */
+ul.board{display:grid;grid-template-columns:1fr 1fr;gap:5px 22px;margin:9px 0 2px;padding:0;
+  list-style:none}
+ul.board li{display:flex;gap:8px;align-items:baseline;break-inside:avoid}
+ul.board .tick{color:var(--teal);font-weight:700;flex:0 0 auto}
+ul.board .d{color:var(--ink-3);font-size:8.7pt}
+
+/* ---- Day 10 certificate (own page, portrait A4) ---- */
+.certificate{page-break-before:always;break-before:page;border:3px double var(--ink);border-radius:4px;
+  padding:6mm;min-height:236mm;display:flex;margin-top:18px}
+.cert-inner{border:1.5px solid var(--amber);border-radius:3px;flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:14mm 12mm}
+.cert-eyebrow{font-family:var(--mono);letter-spacing:.4em;font-size:11pt;font-weight:700;
+  color:var(--amber-ink);text-transform:uppercase}
+.cert-rule{width:60px;height:3px;background:var(--amber);margin:12px 0 18px}
+.cert-title{font-family:Georgia,"Times New Roman",serif;font-size:29pt;font-weight:700;margin:0;color:var(--ink)}
+.cert-sub{font-size:11pt;color:var(--ink-3);margin:22px 0 6px}
+.cert-name{font-family:Georgia,serif;font-size:16pt;border-bottom:1.4px solid var(--ink);
+  min-width:72%;min-height:30px;margin:2px 0 10px}
+.cert-role{font-size:11.5pt;line-height:1.55;max-width:82%;color:var(--ink-2)}
+.cert-role b{font-size:14pt;color:var(--amber-ink)}
+.cert-mods{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;margin:26px 0 4px;max-width:88%}
+.cert-mods span{font-size:9.6pt;font-weight:600;border:1px solid var(--rule);border-radius:20px;
+  padding:4px 12px;color:var(--ink)}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;width:88%;margin-top:32px;gap:20px}
+.cert-foot .sig{flex:1;text-align:center}
+.cert-foot .sig .line{border-bottom:1.3px solid var(--ink);height:26px;margin-bottom:5px}
+.cert-foot .sig .lbl{font-size:9.3pt;color:var(--ink-3)}
+.cert-foot .dt{flex:1;text-align:center;font-weight:700;padding-bottom:3px;font-size:11pt;color:var(--ink)}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 10</div>
+    <h1>Demo Day &amp; the Road to HPC</h1>
+    <div class="sub">Assemble the Studio, present your work, and race matrix multiplication</div>
+    <div class="meta">
+      <span class="date">Thursday · July 30, 2026</span>
+      <span class="chip chip-neutral">🏁 Demo Day · Full Board</span>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">Ten days ago the Studio was empty. Today it is a full board of seven AI capabilities you built with your own hands. Demo Day runs in three acts: <b>assemble</b> the whole Studio, <b>present</b> it like a scientist, then run the <b>Grand Benchmark</b> that reveals the single operation hiding beneath all of it — and points straight at Weeks 3–4. <span style="color:var(--ink-3)"><i>Previously:</i> you unlocked 🎮 Game Master — agents that learn from reward alone.</span></p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Assemble all <b>7 modules</b> into one running Studio</li>
+      <li><span class="cb">☐</span> Present a tight <b>5-minute demo</b> with honest model cards</li>
+      <li><span class="cb">☐</span> Benchmark matmul: <b>pure Python vs NumPy vs GPU</b></li>
+      <li><span class="cb">☐</span> See <b>O(n³)</b> and a <b>×10,000</b> speedup for yourself</li>
+      <li><span class="cb">☐</span> Connect every module to <code>C = A @ B</code></li>
+      <li><span class="cb">☐</span> Carry the plot into Week 3 (<b>Julia / HPC</b>)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the three acts</span></h2>
+    <p><b class="hi">Act I — Assemble.</b> Every notebook exported its model files into <code>ai_studio/models/</code>. Launch the Studio and each satisfied module unlocks its tab. Ten files, seven modules, one app.</p>
+    <p><b class="hi">Act II — Present.</b> A demo is a science talk: <b>hook</b> → two favorite modules <b>live</b> → your <b>hardest bug</b> → what <b>surprised</b> you. A good <b>model card</b> states honestly what a model does, how accurate it is, and where it fails. Honesty is the science.</p>
+    <p><b class="hi">Act III — the Grand Benchmark.</b> Multiply two big matrices three ways — a hand-written triple loop, NumPy, and the GPU — then time them and plot the result on log-log axes. The cost grows like <b>O(n³)</b>, and the GPU comes out ~10,000× faster than the loop.</p>
+    <figure class="diagram">
+      <svg viewBox="0 0 500 168" role="img" aria-label="Log-log money plot of matmul time versus size for three methods"><line x1="54" y1="16" x2="54" y2="140" stroke="#1A1D26" stroke-width="1.3"/><line x1="54" y1="140" x2="480" y2="140" stroke="#1A1D26" stroke-width="1.3"/><text x="16" y="80" font-family="Segoe UI,Arial" font-size="9" fill="#6C7284" transform="rotate(-90 16 80)">time (log)</text><text x="265" y="162" text-anchor="middle" font-family="Segoe UI,Arial" font-size="9" fill="#6C7284">matrix size n (log)</text><polyline points="74,132 190,96 306,60 430,26" fill="none" stroke="#1A1D26" stroke-width="2.3"/><polyline points="74,138 190,120 306,100 430,80" fill="none" stroke="#0E7C86" stroke-width="2.3"/><polyline points="74,139 190,133 306,126 430,118" fill="none" stroke="#B8722C" stroke-width="2.3"/><text x="434" y="24" font-family="Cascadia Code,Consolas,monospace" font-size="9" fill="#1A1D26">pure Python</text><text x="434" y="78" font-family="Cascadia Code,Consolas,monospace" font-size="9" fill="#0B626B">NumPy</text><text x="434" y="120" font-family="Cascadia Code,Consolas,monospace" font-size="9" fill="#8A511C">GPU</text><text x="120" y="60" font-family="Segoe UI,Arial" font-size="10" font-weight="700" fill="#8A511C">×10,000 gap</text></svg>
+      <figcaption>The money plot: the same math, three speeds. On log-log axes each method is a straight line — and the GPU runs about 10,000× faster than the hand-written loop.</figcaption>
+    </figure>
+    <div class="mwatch"><b>🧮 Matrix Watch — the payoff.</b> Every conv, every attention head, every Q-update you built runs on <code>C = A @ B</code>. Matrix multiplication was the whole game all along — and Weeks 3–4 (Julia / HPC) make it scream. <b>Bring this plot.</b></div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">your Demo Day checklist</span></h2>
+    <div class="subhead">Act I · Assemble the Studio</div>
+    <table class="rollcall">
+      <tr><th>Module</th><th>From</th><th>Model file(s)</th><th class="ck">✓</th></tr>
+      <tr><td><b>🐧 Prediction Machine</b></td><td>Day 2</td><td class="f">prediction_machine.joblib</td><td class="ck">☐</td></tr>
+      <tr><td><b>🎨 Pattern Finder</b></td><td>Day 3</td><td class="f">pattern_finder.json</td><td class="ck">☐</td></tr>
+      <tr><td><b>✍️ Digit Reader</b></td><td>Day 5</td><td class="f">digit_reader.pt</td><td class="ck">☐</td></tr>
+      <tr><td><b>🕵️ Photo Detective</b></td><td>Day 6</td><td class="f">photo_detective.pt · photo_detective_classes.json</td><td class="ck">☐</td></tr>
+      <tr><td><b>🪨📄✂️ RPS Arena</b></td><td>Day 7</td><td class="f">rps_arena.pt · rps_labels.json</td><td class="ck">☐</td></tr>
+      <tr><td><b>💬 Language Lab</b></td><td>Day 8</td><td class="f">language_lab.json</td><td class="ck">☐</td></tr>
+      <tr><td><b>🎮 Game Master</b></td><td>Day 9</td><td class="f">game_master_qtable.npy · game_master_dqn.zip</td><td class="ck">☐</td></tr>
+    </table>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Take the roll</span>
+        <span class="m-desc">Tick every file in the table above.</span>
+        <span class="expect"><b>Expect:</b> all 10 present in <code>ai_studio/models/</code> — nothing missing.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">How big are your models?</span>
+        <span class="m-desc">Measure each saved file's size on disk.</span>
+        <span class="expect"><b>Expect:</b> a few KB for the JSON tokens up to tens of MB for the <code>.pt</code> models.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Launch the Studio</span>
+        <span class="m-desc">Run <code>python ai_studio/app.py</code> from the repo root.</span>
+        <span class="expect"><b>Expect:</b> the banner read <b>7 / 7 modules unlocked</b>.</span></li>
+    </ol>
+    <div class="subhead">Act II · Present like a scientist</div>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Write an honest model card</span>
+        <span class="m-desc">For one module, note what it does, its accuracy, and where it fails.</span>
+        <span class="expect"><b>Expect:</b> real numbers and honest failure cases — not hype.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Sketch your 5-minute demo</span>
+        <span class="m-desc">Hook → two favorite modules live → your hardest bug → what surprised you.</span>
+        <span class="expect"><b>Expect:</b> a run-of-show you can deliver without notes.</span></li>
+    </ol>
+    <div class="subhead">Act III · The Grand Benchmark</div>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Rebuild matmul from memory</span>
+        <span class="m-desc">Write the triple-loop <code>matmul</code> with no peeking.</span>
+        <span class="expect"><b>Expect:</b> it match NumPy exactly on a small test case.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Time the hand-written version</span>
+        <span class="m-desc">Clock your loop, NumPy, and the GPU (best of 3 each).</span>
+        <span class="expect"><b>Expect:</b> milliseconds for NumPy vs whole seconds for the loop.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">The money plot 📈</span>
+        <span class="m-desc">Plot time vs n on log-log axes for all three methods.</span>
+        <span class="expect"><b>Expect:</b> three near-straight lines with huge vertical gaps.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Put a number on the gap</span>
+        <span class="m-desc">Divide the slow time by the fast one.</span>
+        <span class="expect"><b>Expect:</b> a speedup on the order of ×10,000.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Graduate 🎓</span>
+        <span class="m-desc">Run the final cell and save your money plot for Week 3.</span>
+        <span class="expect"><b>Expect:</b> a saved figure and a send-off to the HPC weeks.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">benchmarking matmul</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">for i,j,k: C[i,j] += A[i,k]*B[k,j]</td><td class="exp">Matmul by definition — the O(n³) triple loop.</td></tr>
+      <tr><td class="code">t = time.perf_counter()</td><td class="exp">Read a high-resolution clock (take best of 3).</td></tr>
+      <tr><td class="code">torch.cuda.synchronize()</td><td class="exp">Wait for the async GPU before you stop the clock.</td></tr>
+      <tr><td class="code">gflops = 2*n**3 / t / 1e9</td><td class="exp">Turn seconds into GFLOPs (a matmul is 2n³ ops).</td></tr>
+      <tr><td class="code">C = A @ B</td><td class="exp">The one line every Studio module secretly runs.</td></tr>
+      <tr><td class="code">sys.path.insert(0, str(REPO))</td><td class="exp">Let the notebook import the Studio package.</td></tr>
+      <tr><td class="code">from ai_studio.studio import build_demo</td><td class="exp">Assemble all seven modules in code.</td></tr>
+      <tr><td class="code">build_demo().launch()</td><td class="exp">Bring the whole Studio to life.</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">5</span> 🏁 Light up the full board</h2>
+    <div class="unlock">
+      <h3>🏁 The full board — 7 / 7 modules</h3>
+      <p style="margin:0 0 2px;color:var(--ink-2)">No new module today. Instead, every tab you built lights up at once. Launch it and confirm all seven are live:</p>
+      <div class="cmd"><span class="p">$</span> python ai_studio/app.py</div>
+      <ul class="board">
+      <li><span class="tick">✓</span> 🐧 Prediction Machine <span class="d">· Day 2</span></li>
+      <li><span class="tick">✓</span> 🎨 Pattern Finder <span class="d">· Day 3</span></li>
+      <li><span class="tick">✓</span> ✍️ Digit Reader <span class="d">· Day 5</span></li>
+      <li><span class="tick">✓</span> 🕵️ Photo Detective <span class="d">· Day 6</span></li>
+      <li><span class="tick">✓</span> 🪨📄✂️ RPS Arena <span class="d">· Day 7</span></li>
+      <li><span class="tick">✓</span> 💬 Language Lab <span class="d">· Day 8</span></li>
+      <li><span class="tick">✓</span> 🎮 Game Master <span class="d">· Day 9</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>benchmark</dt><dd>A controlled speed test comparing methods fairly.</dd></div>
+      <div class="g"><dt>FLOP / GFLOPs</dt><dd>A floating-point operation · billions of them per second.</dd></div>
+      <div class="g"><dt>Big-O / O(n³)</dt><dd>How cost grows with size; matmul scales as n cubed.</dd></div>
+      <div class="g"><dt>vectorization</dt><dd>Replacing Python loops with fast bulk array operations.</dd></div>
+      <div class="g"><dt>HPC</dt><dd>High-performance computing — big math, made fast at scale.</dd></div>
+      <div class="g"><dt>Julia</dt><dd>The fast scientific language you'll use in Weeks 3–4.</dd></div>
+    </dl>
+  </section>
+
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>Which two modules will you demo live, and what's your 10-second hook for each?</li>
+      <li>What was your hardest bug across ten days, and how did you finally kill it?</li>
+      <li>Your triple loop vs the GPU: how many times faster? Why does that gap matter for real AI?</li>
+    </ol>
+  </section>
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 10 of 10 · Demo Day &amp; the Road to HPC · it was matrix multiplication all along
+  </div>
+  <div class="certificate">
+    <div class="cert-inner">
+      <div class="cert-eyebrow">The Lab</div>
+      <div class="cert-rule"></div>
+      <div class="cert-title">Certificate of Completion</div>
+      <div class="cert-sub">This certifies that</div>
+      <div class="cert-name"></div>
+      <div class="cert-role">has completed the AI Studio Internship and is hereby recognized as a<br><b>Junior AI Researcher</b></div>
+      <div class="cert-mods"><span>🐧 Prediction Machine</span><span>🎨 Pattern Finder</span><span>✍️ Digit Reader</span><span>🕵️ Photo Detective</span><span>🪨📄✂️ RPS Arena</span><span>💬 Language Lab</span><span>🎮 Game Master</span></div>
+      <div class="cert-foot">
+        <div class="sig"><div class="line"></div><div class="lbl">Supervisor</div></div>
+        <div class="dt">July 30, 2026</div>
+        <div class="sig"><div class="line"></div><div class="lbl">Program</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

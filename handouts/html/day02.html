@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 2 — The Prediction Machine</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–5)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px;
+  break-after:avoid;page-break-after:avoid}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 02</div>
+    <h1>The Prediction Machine</h1>
+    <div class="sub">Teaching machines with examples</div>
+    <div class="meta">
+      <span class="date">Monday · July 20, 2026</span>
+      <span class="chip chip-unlock">Unlocks 🐧 Prediction Machine</span>
+    </div>
+  </header>
+
+  <!-- ① MISSION -->
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">A field station just radioed in a spreadsheet of penguin measurements — and <b>no species labels</b>.
+    Their expert is out sick. Your job: build a machine that names a penguin's species from its measurements alone, so
+    the station can label the whole backlog automatically. <span style="color:var(--ink-3)"><i>Previously:</i> as the
+    Data Detective you cleaned this data and watched three species form clear clusters.</span> This is your first real model.</p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Learn <b>supervised learning</b>: features, labels, the train/test split</li>
+      <li><span class="cb">☐</span> Build <b>k-Nearest Neighbors</b> from scratch, then in 3 lines</li>
+      <li><span class="cb">☐</span> <i>See</i> decision boundaries and a readable <b>decision tree</b></li>
+      <li><span class="cb">☐</span> Diagnose mistakes with a <b>confusion matrix</b></li>
+      <li><span class="cb">☐</span> Spring the <b>feature-scaling trap</b> — and fix it</li>
+      <li><span class="cb">☐</span> Ship the champion and <b>unlock your first Studio tab</b></li>
+    </ul>
+  </section>
+
+  <!-- ② FIELD GUIDE -->
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the concepts</span></h2>
+    <p><b class="hi">Supervised learning</b> means learning from labeled examples. Show a machine hundreds of
+    <code>(X, y)</code> pairs — <b>features</b> in, correct <b>label</b> out — and it learns the mapping, then guesses
+    the label for a brand-new example. But how do you know it really learned, versus just memorized? You hide part of
+    the data. Split into a <b>training set</b> (it studies these) and a <b>test set</b> (locked in a drawer), and grade
+    only on the test set. It's the difference between studying past papers and sitting a fresh exam.</p>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 500 118" role="img" aria-label="Data split into a large training set and a small locked-away test set">
+        <text x="8" y="18" font-family="Segoe UI, Arial" font-size="9.5" font-weight="700" fill="#1A1D26">All 333 penguins</text>
+        <!-- training block -->
+        <rect x="8" y="30" width="345" height="52" rx="7" fill="#E1F0F1" stroke="#8FCACF" stroke-width="1.3"/>
+        <text x="180" y="54" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="700" fill="#0B626B">TRAINING SET · 249</text>
+        <text x="180" y="70" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.6" fill="#3B7A80">the machine studies these</text>
+        <!-- test block -->
+        <rect x="361" y="30" width="131" height="52" rx="7" fill="#FBF3E7" stroke="#EBD2AC" stroke-width="1.3"/>
+        <text x="426" y="50" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="700" fill="#8A511C">TEST · 84</text>
+        <text x="426" y="64" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.4" fill="#8A511C">🔒 locked away</text>
+        <text x="426" y="75" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8.4" fill="#8A511C">the honest exam</text>
+        <text x="250" y="104" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" font-style="italic" fill="#6C7284">The golden rule: never test on data you trained on.</text>
+      </svg>
+      <figcaption>A 75 / 25 split. <code>stratify=y</code> keeps each species at the same proportion in both halves.</figcaption>
+    </figure>
+
+    <p><b class="hi">Two classifiers.</b> <b>k-NN</b> labels a new penguin by a majority vote of its <b>k</b> nearest
+    neighbors — small <i>k</i> memorizes (overfits), large <i>k</i> generalizes. A <b>decision tree</b> writes itself a
+    flowchart of yes/no questions you can read out loud. And one trap: k-NN measures "nearest" by distance, so a
+    big-numbered feature like body mass can drown out the rest — <code>StandardScaler</code> gives every feature a fair vote.</p>
+  </section>
+
+  <!-- ③ MISSIONS -->
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">check each off in the notebook</span></h2>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Split the data honestly</span>
+        <span class="m-desc"><code>train_test_split(..., test_size=0.25, stratify=y)</code>.</span>
+        <span class="expect"><b>Expect:</b> 249 training penguins, 84 held out for testing.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Build k-NN from scratch</span>
+        <span class="m-desc">Fill in <code>knn_predict</code>: distance to all points → k nearest → majority vote.</span>
+        <span class="expect"><b>Expect:</b> it labels the first test penguin correctly.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Grade it on the test set</span>
+        <span class="m-desc">Run your k-NN on every test penguin and measure accuracy.</span>
+        <span class="expect"><b>Expect:</b> around 0.95 (the self-check insists on beating 0.80).</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">The same thing in 3 lines</span>
+        <span class="m-desc"><code>KNeighborsClassifier</code> — <code>.fit</code> then <code>.score</code>.</span>
+        <span class="expect"><b>Expect:</b> almost exactly your from-scratch score. Same algorithm.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Grow a tree</span>
+        <span class="m-desc"><code>DecisionTreeClassifier(max_depth=3)</code>, then plot it.</span>
+        <span class="expect"><b>Expect:</b> a shallow flowchart you can trace as a sentence.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Build the confusion matrix</span>
+        <span class="m-desc"><code>confusion_matrix(y_test, y_pred)</code> as a heatmap.</span>
+        <span class="expect"><b>Expect:</b> a bright diagonal; the few mix-ups cluster on Chinstrap.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Run the tournament (raw features)</span>
+        <span class="m-desc">Try every k from 1–15 on all four <i>unscaled</i> features.</span>
+        <span class="expect"><b>Expect:</b> four raw features score <i>worse</i> than two — the trap.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Scale, then rerun</span>
+        <span class="m-desc">Same tournament on <code>StandardScaler</code>-scaled features.</span>
+        <span class="expect"><b>Expect:</b> accuracy jumps above 0.95 at the best k.</span></li>
+    </ol>
+  </section>
+
+  <!-- ④ CHEAT SHEET -->
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">supervised learning with scikit-learn</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">train_test_split(X, y, test_size=0.25, stratify=y)</td><td class="exp">Split into train/test, keeping class ratios</td></tr>
+      <tr><td class="code">KNeighborsClassifier(n_neighbors=5).fit(Xtr, ytr)</td><td class="exp">k-NN: vote of the 5 nearest neighbors</td></tr>
+      <tr><td class="code">model.score(Xte, yte)</td><td class="exp">Fraction correct on the test set (accuracy)</td></tr>
+      <tr><td class="code">model.predict(X_new)</td><td class="exp">Predict labels for new examples</td></tr>
+      <tr><td class="code">DecisionTreeClassifier(max_depth=3)</td><td class="exp">A readable if/else flowchart classifier</td></tr>
+      <tr><td class="code">confusion_matrix(y_test, y_pred)</td><td class="exp">Rows = truth, cols = guesses; diagonal is correct</td></tr>
+      <tr><td class="code">StandardScaler().fit_transform(X_train)</td><td class="exp">Rescale every feature to a fair, comparable spread</td></tr>
+      <tr><td class="code">make_pipeline(StandardScaler(), KNeighbors…)</td><td class="exp">Bundle scaling + model into one object</td></tr>
+      <tr><td class="code">joblib.dump(bundle, path)</td><td class="exp">Save the fitted model to disk</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ⑤ UNLOCK -->
+  <section>
+    <h2 class="sec"><span class="sec-n">5</span> 🔓 Unlock your Studio module</h2>
+    <div class="unlock">
+      <h3>🐧 Prediction Machine</h3>
+      <p style="margin:0 0 2px;color:var(--ink-2)">The unlock cell saves your fitted pipeline as a bundle
+      (<code>model</code> + <code>feature_names</code> + <code>target_names</code>). It must write exactly:</p>
+      <div class="files"><b>ai_studio/models/prediction_machine.joblib</b></div>
+      <p style="margin:2px 0 6px;color:var(--ink-2)">Then run the Studio and drag the four sliders — your model predicts live:</p>
+      <div class="cmd"><span class="p">$</span> python ai_studio/app.py</div>
+    </div>
+  </section>
+
+  <!-- ⑥ GLOSSARY -->
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>supervised learning</dt><dd>Learning a mapping from labeled examples (features → known answer).</dd></div>
+      <div class="g"><dt>train/test split</dt><dd>Hiding part of the data to grade the model honestly on unseen examples.</dd></div>
+      <div class="g"><dt>k-NN</dt><dd>Classify a point by the majority label of its k nearest neighbors.</dd></div>
+      <div class="g"><dt>decision tree</dt><dd>A learned flowchart of yes/no questions ending in a prediction.</dd></div>
+      <div class="g"><dt>accuracy</dt><dd>The fraction of predictions that are correct.</dd></div>
+      <div class="g"><dt>confusion matrix</dt><dd>A grid of true vs predicted labels — shows <i>where</i> mistakes happen.</dd></div>
+      <div class="g"><dt>overfitting</dt><dd>Memorizing the training data (noise and all) instead of the general pattern.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ⑦ TONIGHT -->
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>What accuracy did your <b>Prediction Machine</b> reach — and which two species did it mix up most?</li>
+      <li>Compare the <b>k = 1</b> and <b>k = 15</b> boundaries: which would you trust on a brand-new penguin, and why?</li>
+      <li>The scaling trap made <i>more</i> data hurt. Explain to a friend why <b>body mass</b> was drowning out bill length.</li>
+    </ol>
+  </section>
+
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 2 of 10 · The Prediction Machine · keep this sheet on your desk
+  </div>
+
+</div>
+</body>
+</html>

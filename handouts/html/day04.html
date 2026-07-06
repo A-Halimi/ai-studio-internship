@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 4 — Inside the Brain</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–5)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px;
+  break-after:avoid;page-break-after:avoid}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+.forged-stats{display:flex;gap:10px;flex-wrap:wrap;margin:9px 0 2px}
+.stat{flex:1 1 120px;background:#fff;border:1px solid var(--amber-line);border-radius:6px;padding:7px 10px;text-align:center}
+.stat b{display:block;font-size:15pt;color:var(--amber-ink);line-height:1.1}
+.stat span{font-size:8.3pt;color:var(--ink-2)}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 04</div>
+    <h1>Inside the Brain</h1>
+    <div class="sub">Build a neural network by hand — nothing but NumPy</div>
+    <div class="meta">
+      <span class="date">Wednesday · July 22, 2026</span>
+      <span class="chip chip-neutral">Engine day · no module — you forge the core</span>
+    </div>
+  </header>
+
+  <!-- ① MISSION -->
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">The Chief Scientist drops by with a grin: <i>"Anyone can call a library. Today you build a neural
+    network with your bare hands — just NumPy — and train it to think."</i> No PyTorch, no shortcuts.
+    <span style="color:var(--ink-3)"><i>Previously:</i> you unlocked the Pattern Finder and watched machines find
+    structure with no labels.</span> Today you build the thing everyone <i>means</i> when they say "AI" — and after
+    this, the black box is never black again.</p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Understand a single <b>neuron</b> and why one is never enough</li>
+      <li><span class="cb">☐</span> Discover a layer is really <b>one matrix multiplication</b></li>
+      <li><span class="cb">☐</span> Write the <b>forward pass</b>, a <b>loss</b>, and the <b>nudge</b> update</li>
+      <li><span class="cb">☐</span> <i>Watch</i> the decision boundary bend around the data as it learns</li>
+      <li><span class="cb">☐</span> See how <b>hidden size</b> and <b>learning rate</b> change everything</li>
+      <li><span class="cb">☐</span> Peek at the <b>loss landscape</b> the network rolls down</li>
+    </ul>
+  </section>
+
+  <!-- ② FIELD GUIDE -->
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the concepts</span></h2>
+    <p><b class="hi">A neuron is a bouncer at a door.</b> Each input (a reason to open) has a <b>weight</b> (how much it
+    matters). The bouncer multiplies each input by its weight, sums them, adds a personal <b>bias</b>, and runs the total
+    through an <b>activation</b> — the <b>sigmoid</b> squash that turns any number into a 0-to-1 confidence. One neuron
+    draws one straight cut, so it can't split two tangled moons; stack a <b>hidden layer</b> of them and the boundary can bend.</p>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 500 150" role="img" aria-label="A neuron: two weighted inputs sum with a bias, then a sigmoid squash produces an output">
+        <defs>
+          <marker id="a4" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#6C7284"/>
+          </marker>
+        </defs>
+        <!-- inputs -->
+        <circle cx="42" cy="45" r="17" fill="#E7F2F3" stroke="#8FCACF" stroke-width="1.3"/>
+        <text x="42" y="49" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#0B626B">x₁</text>
+        <circle cx="42" cy="105" r="17" fill="#E7F2F3" stroke="#8FCACF" stroke-width="1.3"/>
+        <text x="42" y="109" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#0B626B">x₂</text>
+        <!-- weight arrows -->
+        <path d="M60,49 L196,68" fill="none" stroke="#6C7284" stroke-width="1.5" marker-end="url(#a4)"/>
+        <path d="M60,101 L196,86" fill="none" stroke="#6C7284" stroke-width="1.5" marker-end="url(#a4)"/>
+        <text x="118" y="52" font-family="Segoe UI, Arial" font-size="9" fill="#8A511C">× w₁</text>
+        <text x="118" y="104" font-family="Segoe UI, Arial" font-size="9" fill="#8A511C">× w₂</text>
+        <!-- sum node -->
+        <circle cx="220" cy="77" r="21" fill="#FBF3E7" stroke="#EBD2AC" stroke-width="1.3"/>
+        <text x="220" y="76" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#8A511C">Σ</text>
+        <text x="220" y="90" text-anchor="middle" font-family="Segoe UI, Arial" font-size="7.5" fill="#8A511C">+ bias</text>
+        <!-- to activation -->
+        <path d="M242,77 L286,77" fill="none" stroke="#6C7284" stroke-width="1.5" marker-end="url(#a4)"/>
+        <!-- activation box -->
+        <rect x="290" y="58" width="92" height="38" rx="8" fill="#E7F2F3" stroke="#8FCACF" stroke-width="1.3"/>
+        <text x="336" y="75" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" font-weight="700" fill="#0B626B">sigmoid</text>
+        <text x="336" y="88" text-anchor="middle" font-family="Segoe UI, Arial" font-size="7.5" fill="#3B7A80">squash → 0…1</text>
+        <!-- output -->
+        <path d="M382,77 L426,77" fill="none" stroke="#6C7284" stroke-width="1.5" marker-end="url(#a4)"/>
+        <text x="462" y="81" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="700" fill="#1A1D26">output</text>
+        <text x="250" y="135" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" font-style="italic" fill="#6C7284">output = sigmoid( w₁·x₁ + w₂·x₂ + bias )</text>
+      </svg>
+      <figcaption>One neuron. A whole <b>layer</b> of them is a single matrix multiply: <code>(300,2) @ (2,16) → (300,16)</code>.</figcaption>
+    </figure>
+
+    <p><b class="hi">Learning = walking downhill.</b> A <b>loss</b> scores how wrong the guesses are (one number). The
+    <b>gradient</b> says which way each weight should move to shrink it; today you estimate it by <i>nudging</i> each
+    weight and re-checking the loss, then step every weight a little downhill (the <b>learning rate</b> sets the step
+    size). Remember the big secret: <b>everything the network does is matrix multiplication</b> — Weeks 3–4 make those fast.</p>
+  </section>
+
+  <!-- ③ MISSIONS -->
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">check each off in the notebook</span></h2>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Implement the sigmoid</span>
+        <span class="m-desc"><code>1 / (1 + np.exp(-z))</code>, working on a whole array at once.</span>
+        <span class="expect"><b>Expect:</b> <code>sigmoid(0) = 0.5</code> and a smooth S-curve from 0 to 1.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Matrix multiply, by hand vs NumPy</span>
+        <span class="m-desc">Write the triple-loop <code>matmul_by_hand</code>, then race it against <code>@</code>.</span>
+        <span class="expect"><b>Expect:</b> the exact same answer — and NumPy winning by hundreds of times.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Write the forward pass</span>
+        <span class="m-desc">Chain two layers: <code>H = sigmoid(X@W1+b1)</code>, then the output layer.</span>
+        <span class="expect"><b>Expect:</b> a (300, 1) array of mush near 0.5 — it hasn't learned yet.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Implement the loss</span>
+        <span class="m-desc">Mean squared error: the average of <code>(pred − truth)²</code>.</span>
+        <span class="expect"><b>Expect:</b> an untrained loss near 0.25.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Take the step (this is learning)</span>
+        <span class="m-desc">Nudge every weight downhill, in place: <code>p -= lr * g</code>.</span>
+        <span class="expect"><b>Expect:</b> the loss falls epoch by epoch as the net figures out the moons.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Score it</span>
+        <span class="m-desc">Threshold predictions at 0.5 and take the fraction correct.</span>
+        <span class="expect"><b>Expect:</b> a well-trained net lands around 88% on the moons (the ceiling is ~97% — tomorrow's power tools close the gap).</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Retrain with 2 and 64 hidden neurons</span>
+        <span class="m-desc">Train both and plot their boundaries side by side.</span>
+        <span class="expect"><b>Expect:</b> 2 is too stiff to bend; 64 is far wigglier.</span></li>
+    </ol>
+  </section>
+
+  <!-- ④ CHEAT SHEET -->
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">a neural net in pure NumPy</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">sigmoid(z) = 1 / (1 + np.exp(-z))</td><td class="exp">Squash any number to a 0–1 confidence</td></tr>
+      <tr><td class="code">X @ W1 + b1</td><td class="exp">A whole layer of neurons in one matrix multiply</td></tr>
+      <tr><td class="code">(300,2) @ (2,16) → (300,16)</td><td class="exp">Shapes: data @ weights → hidden values</td></tr>
+      <tr><td class="code">sigmoid(sigmoid(X@W1+b1) @ W2 + b2)</td><td class="exp">The full two-layer forward pass</td></tr>
+      <tr><td class="code">np.mean((y_pred - y_true) ** 2)</td><td class="exp">MSE loss — one number of wrongness</td></tr>
+      <tr><td class="code">p -= lr * g</td><td class="exp">The update: step each weight downhill (learning!)</td></tr>
+      <tr><td class="code">loss(w+eps) vs loss(w-eps)</td><td class="exp">The nudge: estimate a weight's gradient</td></tr>
+      <tr><td class="code">np.random.default_rng(SEED)</td><td class="exp">Reproducible small random starting weights</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ⑤ WHAT YOU FORGED (no unlock today) -->
+  <section>
+    <h2 class="sec"><span class="sec-n">5</span> 🔨 What you forged today</h2>
+    <div class="unlock">
+      <h3>The engine — built by hand</h3>
+      <p style="margin:0;color:var(--ink-2)">No file to save today. You built the <b>core</b> that tomorrow's Studio
+      module runs on: a neural network from nothing but NumPy that teaches itself to separate two interlocking moons.</p>
+      <div class="forged-stats">
+        <div class="stat"><b>65</b><span>weights &amp; biases<br>(2·16 + 16 + 16 + 1)</span></div>
+        <div class="stat"><b>~88%</b><span>accuracy on the<br>two-moons task</span></div>
+        <div class="stat"><b>130 → 2</b><span>forward passes per step:<br>nudge today, autograd tomorrow</span></div>
+      </div>
+      <p style="margin:8px 0 0;color:var(--amber-ink);font-weight:600">Tomorrow the Lab bolts on power tools — PyTorch
+      autograd and a GPU — and this same engine learns to read handwriting.</p>
+    </div>
+  </section>
+
+  <!-- ⑥ GLOSSARY -->
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>neuron</dt><dd>Weighted sum of inputs + bias, run through an activation.</dd></div>
+      <div class="g"><dt>weight</dt><dd>How much one input counts — a knob the network tunes.</dd></div>
+      <div class="g"><dt>bias</dt><dd>A neuron's offset — its baseline mood, added before the squash.</dd></div>
+      <div class="g"><dt>activation</dt><dd>The squashing step (sigmoid) that bends straight lines into curves.</dd></div>
+      <div class="g"><dt>hidden layer</dt><dd>Neurons between input and output; more = a wigglier boundary.</dd></div>
+      <div class="g"><dt>loss</dt><dd>One number saying how wrong the predictions are (here, MSE).</dd></div>
+      <div class="g"><dt>gradient</dt><dd>The slope of the loss — which way to move each weight to improve.</dd></div>
+      <div class="g"><dt>learning rate</dt><dd>How big a step to take downhill each update.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ⑦ TONIGHT -->
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>How many times did NumPy beat your hand-written <b>matmul</b>? Why does that gap decide the back half of this course?</li>
+      <li>Show the boundary at <b>2 vs 64</b> hidden neurons — which one memorized, which generalized?</li>
+      <li>The nudge method spent ~<b>130 forward passes</b> per step. What does tomorrow's <b>autograd</b> promise instead?</li>
+    </ol>
+  </section>
+
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 4 of 10 · Inside the Brain · keep this sheet on your desk
+  </div>
+
+</div>
+</body>
+</html>

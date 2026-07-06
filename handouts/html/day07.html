@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lab — Day 7 — Standing on Giants' Shoulders</title>
+<style>
+/* ============================================================
+   THE LAB — daily handout stylesheet (identical across days 1–10)
+   Print-first, self-contained, A4. No JS, no external assets.
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --ink:#1A1D26; --ink-2:#474C5B; --ink-3:#6C7284;
+  --amber:#B8722C; --amber-ink:#8A511C; --amber-tint:#FBF3E7; --amber-line:#EBD2AC;
+  --teal:#0E7C86; --teal-ink:#0B626B; --teal-tint:#E7F2F3; --teal-line:#B4D9DD;
+  --rule:#D9DCE4; --rule-2:#ECEEF2; --paper:#fff;
+  --text:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--text); font-size:10.5pt; line-height:1.5; margin:0;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page{max-width:180mm;margin:0 auto}
+@media screen{
+  body{background:#EDEEF1;padding:26px 12px}
+  .page{background:#fff;padding:18mm 16mm;box-shadow:0 3px 22px rgba(20,22,30,.16);border-radius:4px}
+}
+@page{size:A4;margin:16mm}
+
+/* ---- header band ---- */
+.band{border:1px solid var(--rule);border-top:5px solid var(--amber);border-radius:7px;
+  padding:13px 18px 15px;margin-bottom:18px;background:#fff}
+.eyebrow{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.22em;
+  color:var(--amber-ink);text-transform:uppercase}
+.band h1{font-size:20pt;line-height:1.12;margin:5px 0 0;letter-spacing:-.01em}
+.band .sub{color:var(--ink-3);font-size:10pt;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:11px}
+.date{font-size:9pt;color:var(--ink-2);font-weight:600}
+.chip{display:inline-block;font-size:8.6pt;font-weight:700;padding:3px 11px;border-radius:20px;
+  letter-spacing:.01em}
+.chip-unlock{background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.chip-neutral{background:var(--teal-tint);color:var(--teal-ink);border:1px solid var(--teal-line)}
+
+/* ---- sections ---- */
+section{margin:16px 0}
+h2.sec{font-size:12.5pt;margin:0 0 9px;display:flex;align-items:center;gap:9px;
+  break-after:avoid;page-break-after:avoid}
+.sec-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--amber);color:#fff;font-size:9.5pt;font-weight:700;flex:0 0 auto}
+h2.sec .k{font-size:9pt;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+p{margin:0 0 8px}
+.lead{color:var(--ink-2)}
+.motto{border-left:3px solid var(--amber);background:var(--amber-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;font-weight:600;color:var(--amber-ink);margin:10px 0 2px}
+
+/* ---- checkbox goals grid ---- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:4px 0 2px;padding:0;list-style:none}
+.goals li{display:flex;gap:8px;align-items:flex-start;break-inside:avoid}
+.cb{color:var(--teal);font-size:12pt;line-height:1.15;flex:0 0 auto}
+
+/* ---- diagram ---- */
+figure.diagram{margin:12px 0 6px;padding:12px 10px 8px;border:1px solid var(--rule);
+  border-radius:7px;background:#FCFCFD;text-align:center;break-inside:avoid;page-break-inside:avoid}
+figure.diagram svg{width:100%;height:auto;max-width:500px}
+figure.diagram figcaption{font-size:8.6pt;color:var(--ink-3);margin-top:7px}
+
+/* ---- missions ---- */
+.subhead{font-family:var(--mono);font-size:8.7pt;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal-ink);margin:12px 0 6px}
+ol.missions{list-style:none;margin:0;padding:0;counter-reset:m}
+ol.missions li{position:relative;padding:7px 10px 7px 40px;border:1px solid var(--rule);
+  border-radius:6px;margin-bottom:6px;break-inside:avoid;page-break-inside:avoid}
+ol.missions li::before{counter-increment:m;content:counter(m);position:absolute;left:9px;top:7px;
+  width:21px;height:21px;border-radius:5px;background:var(--teal-tint);color:var(--teal-ink);
+  border:1px solid var(--teal-line);font-size:9pt;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+.m-cb{float:right;color:var(--teal);font-size:12pt;margin-left:8px}
+.m-name{font-weight:700}
+.m-desc{color:var(--ink-2);display:block;margin-top:1px}
+.expect{display:block;margin-top:3px;font-size:9pt;color:var(--teal-ink)}
+.expect b{font-weight:700}
+
+/* ---- cheat sheet ---- */
+table.cheat{width:100%;border-collapse:collapse;border:1.5px solid var(--teal-line);
+  border-radius:6px;overflow:hidden;font-size:9.4pt;break-inside:avoid;page-break-inside:avoid}
+table.cheat td{padding:5px 10px;border-top:1px solid var(--rule-2);vertical-align:top}
+table.cheat tr:first-child td{border-top:none}
+table.cheat .code{font-family:var(--mono);color:var(--teal-ink);background:var(--teal-tint);
+  white-space:nowrap;font-size:9pt;width:1%;border-right:1px solid var(--teal-line)}
+table.cheat .exp{color:var(--ink-2)}
+@media screen{.cheat-wrap{overflow-x:auto}}
+
+/* ---- unlock / forged box ---- */
+.unlock{border:1.5px solid var(--amber-line);background:var(--amber-tint);border-radius:8px;
+  padding:12px 16px;break-inside:avoid;page-break-inside:avoid}
+.unlock h3{margin:0 0 5px;font-size:11.5pt;color:var(--amber-ink)}
+.unlock .files{font-family:var(--mono);font-size:9.2pt;margin:7px 0}
+.unlock .files b{background:#fff;border:1px solid var(--amber-line);padding:1px 7px;border-radius:4px;
+  color:var(--amber-ink)}
+.cmd{font-family:var(--mono);font-size:9.3pt;background:#2B2F3A;color:#F4F1EA;padding:6px 11px;
+  border-radius:5px;display:inline-block;margin-top:3px}
+.cmd .p{color:#B8C0CC}
+
+/* ---- glossary ---- */
+dl.gloss{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin:2px 0}
+dl.gloss .g{break-inside:avoid;page-break-inside:avoid}
+dl.gloss dt{font-weight:700;color:var(--amber-ink)}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:9.6pt}
+
+/* ---- tonight box ---- */
+.tonight{border:1.5px solid var(--rule);border-left:5px solid var(--teal);border-radius:7px;
+  padding:11px 16px 8px;background:#FBFCFC;break-inside:avoid;page-break-inside:avoid}
+.tonight h2.sec{margin-bottom:6px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:5px;color:var(--ink-2)}
+ol.qs li b{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{text-align:center;font-size:8.4pt;color:var(--ink-3);margin-top:20px;padding-top:9px;
+  border-top:1px solid var(--rule-2)}
+.foot .mono{font-family:var(--mono);letter-spacing:.08em}
+code{font-family:var(--mono);font-size:.92em;background:var(--rule-2);padding:.5px 4px;border-radius:3px;
+  color:var(--ink)}
+b.hi{color:var(--teal-ink)}
+/* ---- Matrix Watch (HPC breadcrumb) — the teal cousin of .motto ---- */
+.mwatch{border-left:3px solid var(--teal);background:var(--teal-tint);padding:7px 12px;
+  border-radius:0 5px 5px 0;margin:11px 0 2px;font-size:9.6pt;color:var(--ink-2)}
+.mwatch b{color:var(--teal-ink)}
+
+/* ---- Day 10 roll-call table ---- */
+table.rollcall{width:100%;border-collapse:collapse;border:1.5px solid var(--rule);border-radius:6px;
+  overflow:hidden;font-size:9pt;margin:2px 0 6px;break-inside:avoid;page-break-inside:avoid}
+table.rollcall th,table.rollcall td{padding:4px 9px;border-top:1px solid var(--rule-2);
+  text-align:left;vertical-align:top}
+table.rollcall th{background:var(--teal-tint);color:var(--teal-ink);font-size:8.3pt;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;border-top:none}
+table.rollcall .f{font-family:var(--mono);font-size:8.4pt;color:var(--ink-2)}
+table.rollcall .ck{text-align:center;color:var(--teal);width:26px}
+
+/* ---- Day 10 full-board list ---- */
+ul.board{display:grid;grid-template-columns:1fr 1fr;gap:5px 22px;margin:9px 0 2px;padding:0;
+  list-style:none}
+ul.board li{display:flex;gap:8px;align-items:baseline;break-inside:avoid}
+ul.board .tick{color:var(--teal);font-weight:700;flex:0 0 auto}
+ul.board .d{color:var(--ink-3);font-size:8.7pt}
+
+/* ---- Day 10 certificate (own page, portrait A4) ---- */
+.certificate{page-break-before:always;break-before:page;border:3px double var(--ink);border-radius:4px;
+  padding:6mm;min-height:236mm;display:flex;margin-top:18px}
+.cert-inner{border:1.5px solid var(--amber);border-radius:3px;flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:14mm 12mm}
+.cert-eyebrow{font-family:var(--mono);letter-spacing:.4em;font-size:11pt;font-weight:700;
+  color:var(--amber-ink);text-transform:uppercase}
+.cert-rule{width:60px;height:3px;background:var(--amber);margin:12px 0 18px}
+.cert-title{font-family:Georgia,"Times New Roman",serif;font-size:29pt;font-weight:700;margin:0;color:var(--ink)}
+.cert-sub{font-size:11pt;color:var(--ink-3);margin:22px 0 6px}
+.cert-name{font-family:Georgia,serif;font-size:16pt;border-bottom:1.4px solid var(--ink);
+  min-width:72%;min-height:30px;margin:2px 0 10px}
+.cert-role{font-size:11.5pt;line-height:1.55;max-width:82%;color:var(--ink-2)}
+.cert-role b{font-size:14pt;color:var(--amber-ink)}
+.cert-mods{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;margin:26px 0 4px;max-width:88%}
+.cert-mods span{font-size:9.6pt;font-weight:600;border:1px solid var(--rule);border-radius:20px;
+  padding:4px 12px;color:var(--ink)}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;width:88%;margin-top:32px;gap:20px}
+.cert-foot .sig{flex:1;text-align:center}
+.cert-foot .sig .line{border-bottom:1.3px solid var(--ink);height:26px;margin-bottom:5px}
+.cert-foot .sig .lbl{font-size:9.3pt;color:var(--ink-3)}
+.cert-foot .dt{flex:1;text-align:center;font-weight:700;padding-bottom:3px;font-size:11pt;color:var(--ink)}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="band">
+    <div class="eyebrow">The Lab — Day 07</div>
+    <h1>Standing on Giants' Shoulders</h1>
+    <div class="sub">Transfer learning — borrow a giant's brain, teach it your trick</div>
+    <div class="meta">
+      <span class="date">Monday · July 27, 2026</span>
+      <span class="chip chip-unlock">Unlocks ✂️ RPS Arena</span>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">1</span> Mission briefing</h2>
+    <p class="lead">Training the Photo Detective from scratch was real work — and it still tops out near 70%. What if you could borrow a network that already spent weeks studying millions of images, and teach it just <i>one</i> new trick? That is <b>transfer learning</b>. Today you stand on a giant's shoulders: freeze a pretrained MobileNetV3, transplant a fresh head, and teach it rock-paper-scissors with photos you collect yourself. <span style="color:var(--ink-3)"><i>Previously:</i> you unlocked 🕵️ Photo Detective, a CNN that classifies real photos.</span></p>
+    <ul class="goals">
+      <li><span class="cb">☐</span> Understand <b>transfer learning</b> (an expert chef, one new dish)</li>
+      <li><span class="cb">☐</span> Freeze the body, transplant a new <b>head</b> (~927k vs ~1.7k)</li>
+      <li><span class="cb">☐</span> Multiply your data with <b>augmentation</b> (flip / rotate)</li>
+      <li><span class="cb">☐</span> Collect your own photos by webcam or phone</li>
+      <li><span class="cb">☐</span> Prove the giant matters: <b>pretrained vs random</b></li>
+      <li><span class="cb">☐</span> Wire the model into the RPS referee</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">2</span> Field guide <span class="k">the concepts</span></h2>
+    <p><b class="hi">Transfer learning.</b> An expert chef learning one new dish does not relearn how to hold a knife. A network pretrained on a million photos already knows edges, textures, and shapes — knowledge that transfers to <i>your</i> problem for free.</p>
+    <p><b class="hi">Freeze the body, transplant the head.</b> Keep the giant's feature extractor (its "body") frozen, and replace only the final classifier (its "head") with a fresh 3-class layer. That is ~927,000 frozen weights and only ~1,700 you actually train — fast, and it needs very little data.</p>
+    <figure class="diagram">
+      <svg viewBox="0 0 500 140" role="img" aria-label="A frozen pretrained body and a small trainable head"><rect x="14" y="30" width="236" height="80" rx="9" fill="#E7F2F3" stroke="#0E7C86" stroke-width="1.8"/><text x="132" y="54" text-anchor="middle" font-family="Segoe UI,Arial" font-size="11.5" font-weight="700" fill="#0B626B">Pretrained body</text><text x="132" y="71" text-anchor="middle" font-family="Segoe UI,Arial" font-size="9" fill="#474C5B">MobileNetV3 features</text><text x="132" y="95" text-anchor="middle" font-family="Cascadia Code,Consolas,monospace" font-size="10" font-weight="700" fill="#1A1D26">🔒 frozen · ~927k</text><path d="M254 70 h30" fill="none" stroke="#6C7284" stroke-width="1.7" marker-end="url(#tf)"/><defs><marker id="tf" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#6C7284"/></marker></defs><rect x="290" y="34" width="196" height="72" rx="9" fill="#FBF3E7" stroke="#B8722C" stroke-width="1.8"/><text x="388" y="57" text-anchor="middle" font-family="Segoe UI,Arial" font-size="11.5" font-weight="700" fill="#8A511C">New head</text><text x="388" y="74" text-anchor="middle" font-family="Cascadia Code,Consolas,monospace" font-size="9.5" fill="#1A1D26">Linear(1024, 3)</text><text x="388" y="94" text-anchor="middle" font-family="Cascadia Code,Consolas,monospace" font-size="10" font-weight="700" fill="#8A511C">✎ trained · ~1.7k</text></svg>
+      <figcaption>Freeze the giant's body and train only a fresh 3-class head — roughly 1,700 weights instead of a million.</figcaption>
+    </figure>
+    <p><b class="hi">Free data, real proof.</b> <b>Augmentation</b> flips and rotates each photo into several free training examples. And to <i>prove</i> the giant matters, train the same head twice — once on the pretrained body, once on a random one. The gap between them is the transferred knowledge, made visible.</p>
+    <div class="mwatch"><b>🧮 Matrix Watch —</b> that frozen giant is millions of stored weights, and every forward pass through it is a stack of matrix multiplies. You just retrain the last one — the rest was precomputed for you.</div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">3</span> Lab missions <span class="k">check each off in the notebook</span></h2>
+    <ol class="missions">
+      <li><span class="m-cb">☐</span><span class="m-name">Finish the validation pipeline</span>
+        <span class="m-desc">Assemble the eval transform: <code>Resize(256)</code> → <code>CenterCrop(224)</code> → ImageNet <code>Normalize</code>.</span>
+        <span class="expect"><b>Expect:</b> tensors shaped (3, 224, 224) in the giant's color world.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Freeze the giant's brain 🧊</span>
+        <span class="m-desc">Set <code>requires_grad = False</code> across the feature body.</span>
+        <span class="expect"><b>Expect:</b> trainable parameters collapse from ~2.5M to about 1.7k.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Perform the transplant</span>
+        <span class="m-desc">Swap <code>classifier[3]</code> for <code>nn.Linear(1024, 3)</code>.</span>
+        <span class="expect"><b>Expect:</b> a model that now outputs exactly 3 scores.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Point the optimizer at the new head</span>
+        <span class="m-desc">Give <code>Adam</code> only the parameters that still require grad.</span>
+        <span class="expect"><b>Expect:</b> training touch the head and leave the body untouched.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Build a giant with no experience</span>
+        <span class="m-desc">Make the same architecture from random init and train the head.</span>
+        <span class="expect"><b>Expect:</b> the pretrained model crush the random one — proof of transfer.</span></li>
+      <li><span class="m-cb">☐</span><span class="m-name">Teach the model to referee</span>
+        <span class="m-desc">Wire predictions into the rock-paper-scissors judge.</span>
+        <span class="expect"><b>Expect:</b> it call your move and pick a winner (try 😈 cheat mode).</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">4</span> Cheat sheet <span class="k">transfer learning in PyTorch</span></h2>
+    <div class="cheat-wrap">
+    <table class="cheat">
+      <tr><td class="code">mobilenet_v3_small(weights="DEFAULT")</td><td class="exp">Download a pretrained giant.</td></tr>
+      <tr><td class="code">net.features.requires_grad_(False)</td><td class="exp">Freeze the whole body in one call.</td></tr>
+      <tr><td class="code">model.classifier[3] = nn.Linear(1024, 3)</td><td class="exp">Transplant a fresh 3-class head.</td></tr>
+      <tr><td class="code">datasets.ImageFolder(root, transform=tf)</td><td class="exp">Read images; labels come from folder names.</td></tr>
+      <tr><td class="code">Resize(256) · CenterCrop(224)</td><td class="exp">Match the giant's expected input size.</td></tr>
+      <tr><td class="code">Normalize(IMAGENET_MEAN, IMAGENET_STD)</td><td class="exp">Use the exact colors the giant learned on.</td></tr>
+      <tr><td class="code">RandomHorizontalFlip()</td><td class="exp">Free extra training data from a mirror.</td></tr>
+      <tr><td class="code">Adam(head.parameters(), lr=1e-3)</td><td class="exp">Train only the unfrozen head.</td></tr>
+      <tr><td class="code">torch.jit.trace(model, ex).save(path)</td><td class="exp">Freeze the fine-tuned model to a file.</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">5</span> 🔓 Unlock your Studio module</h2>
+    <div class="unlock">
+      <h3>✂️ RPS Arena</h3>
+      <p style="margin:0 0 2px;color:var(--ink-2)">Fine-tune, trace, and save your model. The unlock cell must write exactly:</p>
+      <div class="files"><b>ai_studio/models/rps_arena.pt</b> <b>ai_studio/models/rps_labels.json</b></div>
+      <p style="margin:2px 0 6px;color:var(--ink-2)">Then play rock-paper-scissors against your own model — and flip on 😈 cheat mode:</p>
+      <div class="cmd"><span class="p">$</span> python ai_studio/app.py</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sec-n">6</span> Mini-glossary</h2>
+    <dl class="gloss">
+      <div class="g"><dt>transfer learning</dt><dd>Reusing a model trained on one task to jump-start another.</dd></div>
+      <div class="g"><dt>pretrained weights</dt><dd>The knowledge a network already learned on a huge dataset.</dd></div>
+      <div class="g"><dt>fine-tuning</dt><dd>Lightly retraining part of a pretrained model on your data.</dd></div>
+      <div class="g"><dt>frozen layer</dt><dd>A layer whose weights are held fixed during training.</dd></div>
+      <div class="g"><dt>classifier head</dt><dd>The final layer(s) that turn features into class scores.</dd></div>
+      <div class="g"><dt>data augmentation</dt><dd>Making new training examples by transforming existing ones.</dd></div>
+      <div class="g"><dt>ImageNet</dt><dd>The million-image dataset most giants are pretrained on.</dd></div>
+    </dl>
+  </section>
+
+  <section class="tonight">
+    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <ol class="qs">
+      <li>How many photos did you train on, and how good is your Arena? Does cheat mode feel fair?</li>
+      <li>Pretrained vs random init — how big was the gap? What does that prove about the giant?</li>
+      <li>Where does your model get confused (lighting, angle, background)? How would more data help?</li>
+    </ol>
+  </section>
+  <div class="foot">
+    <span class="mono">THE LAB</span> · Day 7 of 10 · Standing on Giants' Shoulders · borrow knowledge, don't rebuild it
+  </div>
+
+</div>
+</body>
+</html>
