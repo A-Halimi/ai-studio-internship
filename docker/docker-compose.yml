@@ -1,0 +1,15 @@
+# Convenience wrapper - identical to the docker run command in the README.
+#   cd docker
+#   docker compose up
+# JupyterLab: http://127.0.0.1:8888   Gradio: http://127.0.0.1:7860
+services:
+  ai-studio:
+    build: .
+    image: ai-studio:v3
+    ipc: host
+    gpus: all
+    ports:
+      - "127.0.0.1:8888:8888"
+      - "127.0.0.1:7860:7860"
+    volumes:
+      - ..:/workspace
