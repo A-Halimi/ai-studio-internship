@@ -2,10 +2,16 @@
 #   cd docker
 #   docker compose up
 # JupyterLab: http://127.0.0.1:8888   Gradio: http://127.0.0.1:7860
+#
+# Mounting the repo root (..) means the baked materials are skipped and you
+# work directly on the repo files - the instructor setup. Students who pull
+# the image from Docker Hub don't need this file at all.
 services:
   ai-studio:
-    build: .
-    image: ai-studio:v3
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: abdelghafour1/ai-studio:latest
     ipc: host
     gpus: all
     ports:

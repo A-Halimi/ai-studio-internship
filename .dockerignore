@@ -1,0 +1,18 @@
+# Keep the build context lean and make sure instructor-only / generated
+# content can never leak into the student image.
+.git
+.gitattributes
+.gitignore
+.smoke_out
+data
+solutions
+INSTRUCTOR_GUIDE.md
+assets
+
+# Students must unlock modules themselves - never ship trained models.
+ai_studio/models/*
+!ai_studio/models/.gitkeep
+
+# Python noise
+**/__pycache__
+**/.ipynb_checkpoints

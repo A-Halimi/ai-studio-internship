@@ -1,12 +1,14 @@
 # ============================================================================
-# AI Studio Internship - all-in-one GPU JupyterLab image
+# AI Studio Internship - all-in-one GPU JupyterLab image WITH course materials
 #
-# Build:  docker build -t ai-studio:v3 E:\High_school_project_v3\docker
-#         (add --build-arg PREFETCH=0 for a slim image without baked datasets)
+# Build (from the REPO ROOT, not from docker/):
+#   docker build -f docker/Dockerfile -t abdelghafour1/ai-studio:latest .
+#   (add --build-arg PREFETCH=0 for a slim image without baked datasets)
 #
-# Run:    docker run --rm --gpus all --ipc=host ^
-#           -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 ^
-#           -v "E:\High_school_project_v3:/workspace" ai-studio:v3
+# Run (materials auto-install into /workspace on first start):
+#   docker run --rm --gpus all --ipc=host ^
+#     -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 ^
+#     -v "%cd%\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
 #
 # Then open http://127.0.0.1:8888  (JupyterLab, no token needed)
 # Gradio apps launched from notebooks appear at http://127.0.0.1:7860
@@ -27,21 +29,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install torch==2.12.1 torchvision==0.27.1 \
         --index-url https://download.pytorch.org/whl/cu126
 
-COPY requirements-docker.txt /tmp/requirements-docker.txt
+COPY docker/requirements-docker.txt /tmp/requirements-docker.txt
 RUN pip install -r /tmp/requirements-docker.txt
 
-# Bake datasets + model weights into the image, OUTSIDE /workspace so the
+# Bake datasets + model weights into the image, OUTSIDE /workspace so a
 # volume mount never shadows them. Notebooks read COURSE_DATA_DIR first and
 # fall back to ./data when it is not set (laptops / Colab).
 ENV HF_HOME=/opt/hf-cache \
     TORCH_HOME=/opt/torch-cache \
     COURSE_DATA_DIR=/opt/course/data
 ARG PREFETCH=1
-COPY prefetch.py /tmp/prefetch.py
+COPY docker/prefetch.py /tmp/prefetch.py
 # If docker/cifar-10-python.tar.gz exists in the build context it is used
 # directly (no network); otherwise prefetch.py downloads from a fast mirror.
 # The tarball is removed after extraction so it never bloats a layer.
-RUN --mount=type=bind,source=.,target=/ctx \
+RUN --mount=type=bind,source=docker,target=/ctx \
     if [ "$PREFETCH" = "1" ]; then \
         mkdir -p "$COURSE_DATA_DIR" && \
         { [ -f /ctx/cifar-10-python.tar.gz ] && \
@@ -50,12 +52,28 @@ RUN --mount=type=bind,source=.,target=/ctx \
         rm -f "$COURSE_DATA_DIR/cifar-10-python.tar.gz"; \
     fi
 
+# ── Course materials (student set - solutions and trained models are
+#    excluded via .dockerignore). On first start they are copied into
+#    /workspace so they appear in JupyterLab and, when a volume is mounted,
+#    on the student's own disk. ─────────────────────────────────────────────
+COPY notebooks/       /opt/course/materials/notebooks/
+COPY slides/          /opt/course/materials/slides/
+COPY handouts/        /opt/course/materials/handouts/
+COPY ai_studio/       /opt/course/materials/ai_studio/
+COPY data_samples/    /opt/course/materials/data_samples/
+COPY scripts/download_data.py /opt/course/materials/scripts/download_data.py
+COPY requirements.txt README.md /opt/course/materials/
+
 ENV GRADIO_SERVER_NAME=0.0.0.0
 WORKDIR /workspace
 EXPOSE 8888 7860
 
 # No token: the README run command binds ports to 127.0.0.1 only.
-CMD ["jupyter", "lab", \
-     "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", \
-     "--ServerApp.root_dir=/workspace", \
-     "--IdentityProvider.token=", "--ServerApp.password="]
+CMD ["bash","-c","\
+if [ ! -e /workspace/notebooks ]; then \
+  echo '>>> First run: installing course materials into /workspace ...'; \
+  cp -a /opt/course/materials/. /workspace/; \
+fi; \
+exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root \
+  --ServerApp.root_dir=/workspace \
+  --IdentityProvider.token= --ServerApp.password="]
