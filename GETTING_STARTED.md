@@ -9,16 +9,25 @@ Repo: <https://github.com/A-Halimi/ai-studio-internship> · Image: `abdelghafour
 
 ### Once, before Day 1 (≈ 1 hour, mostly waiting)
 
-1. **Get the materials & image ready** *(already done on the E:\ workstation)*
+1. **Get the materials & images ready** *(already done on the E:\ workstation)*
    ```powershell
    git clone https://github.com/A-Halimi/ai-studio-internship.git
    cd ai-studio-internship
+
+   # student image → public Docker Hub
    docker build -f docker/Dockerfile -t abdelghafour1/ai-studio:latest .
    docker login
    docker push abdelghafour1/ai-studio:latest
+
+   # instructor image (solutions + guide + pre-trained 7/7 Studio) → LOCAL ONLY
+   docker build -f docker/Dockerfile.instructor -t abdelghafour1/ai-studio:instructor .
    ```
    Rebuild + re-push whenever you change materials (rebuilds are fast — the
    heavy layers are cached; students just `docker pull` again).
+   ⚠️ Never `docker push` the `:instructor` tag to the public repo — any
+   student could pull it and read the answer key. Run it like the student
+   image; if a student container already holds the ports, use
+   `-p 127.0.0.1:8889:8888 -p 127.0.0.1:7861:7860`.
 
 2. **Dry-run the classroom setup** on your machine:
    ```powershell
@@ -65,24 +74,48 @@ reveal single blocks when someone is truly stuck, never the file.
 ### Way 1 — Docker (best if you have a laptop with an NVIDIA GPU)
 
 1. Install **Docker Desktop** (Windows: enable the WSL2 backend when asked).
-2. Open a terminal (PowerShell on Windows) and pull the course image once
-   (~7 GB — do this at home or on fast Wi-Fi):
+2. Open a terminal and pull the course image once (~7 GB — do it at home or
+   on fast Wi-Fi):
    ```
    docker pull abdelghafour1/ai-studio:latest
    ```
-3. Create an empty folder for your work, e.g. `my-ai-studio`, then run:
+3. **One-time setup** — creates your personal, persistent container named
+   `ai-studio`. Copy the block for YOUR system:
+
+   **Windows (PowerShell):**
    ```powershell
-   docker run --rm --gpus all --ipc=host `
+   docker run -d --name ai-studio --gpus all --ipc=host `
      -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 `
-     -v "$PWD\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+     -v "${PWD}\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
    ```
-   *macOS/Linux:* same, but `-v "$PWD/my-ai-studio:/workspace"` and use `\`
-   for line breaks. *No NVIDIA GPU?* Remove `--gpus all` — all notebooks
-   fall back to CPU automatically.
-4. Open **<http://127.0.0.1:8888>** in your browser → JupyterLab with all
-   course materials. Your work is saved in `my-ai-studio` on YOUR disk.
-5. Day-to-day: just repeat step 3 (same command, same folder).
-   When your Studio app runs, it's at **<http://127.0.0.1:7860>**.
+   **Windows (Command Prompt / cmd):**
+   ```bat
+   docker run -d --name ai-studio --gpus all --ipc=host ^
+     -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 ^
+     -v "%cd%\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+   ```
+   **macOS / Linux:**
+   ```bash
+   docker run -d --name ai-studio --gpus all --ipc=host \
+     -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 \
+     -v "$PWD/my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+   ```
+   ⚠️ **No NVIDIA GPU** (every Mac, many laptops): delete `--gpus all` from
+   the command — everything falls back to CPU automatically.
+   (Apple-Silicon Macs run this image in emulation — it works but is slow;
+   prefer Way 2 / Colab on those.)
+4. Open **<http://127.0.0.1:8888>** → JupyterLab with all course materials.
+   Everything you edit and train is saved in the `my-ai-studio` folder on
+   YOUR disk. Your Studio app appears at **<http://127.0.0.1:7860>**.
+5. **Every day after — two words:**
+   ```
+   docker start ai-studio     # continue exactly where you left off
+   docker stop  ai-studio     # done for the day
+   ```
+   (If the instructor announces an image update:
+   `docker stop ai-studio`, `docker rm ai-studio`,
+   `docker pull abdelghafour1/ai-studio:latest`, then redo step 3 —
+   your work is safe in `my-ai-studio`.)
 
 ### Way 2 — Google Colab (zero install, free GPU in the browser)
 
@@ -149,7 +182,19 @@ getting material updates without re-pulling the image.
 
 **Is `-v` necessary?**
 Not strictly — the container works without it. But without `-v` your edits
-and trained models live only inside the container (and `--rm` deletes the
-container at exit). Mount an empty folder with `-v` and everything persists
-on your own disk. Short version: **always use `-v`, point it at an empty
-folder, reuse the same folder every day.**
+and trained models live only inside the container. Mount an empty folder
+with `-v` and everything persists on your own disk. Short version:
+**always use `-v`, point it at an empty folder, reuse the same folder.**
+
+**Why a named container (`--name ai-studio`, no `--rm`) instead of `--rm`?**
+Two reasons: (1) day-to-day becomes just `docker start ai-studio` /
+`docker stop ai-studio` — no long command to remember; (2) nothing is
+deleted behind your back. Combined with `-v`, you get the best of both
+worlds: an easy start/stop workflow AND all files safe on your own disk —
+so even `docker rm ai-studio` loses nothing.
+
+**Is there a separate instructor image?**
+Yes — `abdelghafour1/ai-studio:instructor` (built locally, never pushed to
+the public repo): the student image plus `solutions/`, the instructor
+guide, all maintainer scripts, and pre-trained models so the finished 7/7
+Studio can be demoed on Day 1 without training anything.

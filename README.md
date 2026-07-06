@@ -37,31 +37,56 @@ Daily rhythm: **morning briefing** (interactive HTML deck in `slides/`) →
 
 The image contains the **full environment AND all course materials**
 (notebooks, slides, handouts, the AI Studio app, datasets, model weights).
-On first start it copies the materials into `/workspace`:
+On first start it copies the materials into `/workspace`.
 
+**Set up once** (creates a persistent, named container — pick your OS):
+
+*Windows · PowerShell*
 ```powershell
-# 1. pull once (~7 GB download)
 docker pull abdelghafour1/ai-studio:latest
-
-# 2. run — JupyterLab: http://127.0.0.1:8888 (no token) · Gradio: http://127.0.0.1:7860
-docker run --rm --gpus all --ipc=host `
+docker run -d --name ai-studio --gpus all --ipc=host `
   -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 `
-  -v "$PWD\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+  -v "${PWD}\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
 ```
 
-(macOS/Linux: same command with `-v "$PWD/my-ai-studio:/workspace"` and `\`
-instead of `` ` `` for line breaks. No NVIDIA GPU? Drop `--gpus all` —
-everything falls back to CPU.)
+*Windows · Command Prompt (cmd)*
+```bat
+docker pull abdelghafour1/ai-studio:latest
+docker run -d --name ai-studio --gpus all --ipc=host ^
+  -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 ^
+  -v "%cd%\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+```
 
-**About `-v` (the volume):** it is *optional but strongly recommended*.
-- **With `-v <empty folder>:/workspace`** → on first start the course
-  materials are copied into that folder, and everything you edit/train
-  **persists on your own disk**. Next runs reuse it. ← use this.
-- **Without `-v`** → materials still appear and everything works, but your
-  work lives only inside that container: gone when the container is removed
-  (`--rm` removes it at exit!). Only OK for a quick look.
+*macOS / Linux*
+```bash
+docker pull abdelghafour1/ai-studio:latest
+docker run -d --name ai-studio --gpus all --ipc=host \
+  -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 \
+  -v "$PWD/my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+```
 
-No git and no GitHub account needed in this mode.
+Then open **<http://127.0.0.1:8888>** (JupyterLab, no token). Gradio apps:
+**<http://127.0.0.1:7860>**.
+
+**Every day after** — no long command needed:
+```
+docker start ai-studio      # continue where you left off
+docker stop  ai-studio      # done for the day (or just shut the laptop)
+```
+
+Notes:
+- **No NVIDIA GPU** (all Macs, many laptops): remove `--gpus all` —
+  everything falls back to CPU. Apple-Silicon Macs run the image under
+  emulation (works, but slow) — Colab is usually the better choice there.
+- **`-v` (the folder mount)** is *optional but strongly recommended*: the
+  materials are copied into `my-ai-studio` on first start and **all your
+  work persists on your own disk** — even if the container is deleted.
+  Reuse the same folder every time.
+- **When the instructor ships an update**:
+  `docker stop ai-studio && docker rm ai-studio && docker pull abdelghafour1/ai-studio:latest`
+  then run the setup command again — your work is safe in `my-ai-studio`
+  (already-present files are kept; delete a notebook to get its fresh copy).
+- No git and no GitHub account needed in this mode.
 
 ### ☁️ Mode B: Google Colab (zero install, free GPU)
 
@@ -94,22 +119,34 @@ Every notebook auto-detects the device; no GPU = slower, never broken.
 
 ---
 
-## Instructor: building & publishing the image
+## Instructor: building & publishing the images
 
-Run from the **repo root** (the build context must see the course files):
+Two images, built from the **repo root**:
+
+| Image | Contains | Distribution |
+|---|---|---|
+| `abdelghafour1/ai-studio:latest` | student materials, locked Studio | **public** Docker Hub — students pull this |
+| `abdelghafour1/ai-studio:instructor` | everything above **+ solutions, INSTRUCTOR_GUIDE, all scripts, pre-trained models (7/7 Studio demo)** | **local only** — never push to the public repo |
 
 ```powershell
+# student image (public)
 docker build -f docker/Dockerfile -t abdelghafour1/ai-studio:latest -t abdelghafour1/ai-studio:v3 .
 docker login          # once
 docker push abdelghafour1/ai-studio:latest
 docker push abdelghafour1/ai-studio:v3
+
+# instructor image (build AFTER the student image; keep local)
+docker build -f docker/Dockerfile.instructor -t abdelghafour1/ai-studio:instructor .
 ```
 
-The image bakes the **student** materials only — `solutions/`,
-`INSTRUCTOR_GUIDE.md` and any trained models in `ai_studio/models/` are
-excluded via `.dockerignore`, so students start with a fully locked Studio.
-After changing materials: rebuild (fast — heavy layers are cached) and
-re-push, and ask students to `docker pull` again.
+The student image bakes student materials only — `solutions/`,
+`INSTRUCTOR_GUIDE.md` and trained models are excluded via `.dockerignore`,
+so students start with a fully locked Studio. ⚠️ Anyone can pull any tag of
+a public repo — that's why the instructor tag stays local (or goes to a
+separate *private* Docker Hub repo, see the note in
+`docker/Dockerfile.instructor`). After changing materials: rebuild both
+(fast — heavy layers are cached), re-push the student tags, and ask
+students to update per the note in Mode A.
 
 ## One-time setup for the instructor
 

@@ -1,0 +1,24 @@
+# ============================================================================
+# INSTRUCTOR image - the student image PLUS solutions, instructor guide,
+# maintainer scripts, and the pre-trained Studio models (so the finished
+# 7/7 Studio demo works immediately on Day 1).
+#
+# Build (from the REPO ROOT, after building/pulling the student image):
+#   docker build -f docker/Dockerfile.instructor -t abdelghafour1/ai-studio:instructor .
+#
+# ⚠️ Do NOT push this tag to the public Docker Hub repo - anyone (including
+#    students) could pull it and read the answer key. Keep it local, or push
+#    it to a separate PRIVATE repository if you need it on another machine:
+#      docker tag abdelghafour1/ai-studio:instructor abdelghafour1/ai-studio-instructor:latest
+#      docker push abdelghafour1/ai-studio-instructor:latest   # repo set to private!
+#
+# Run it exactly like the student image (same ports, same -v pattern). If a
+# student container is already using ports 8888/7860, shift yours:
+#   -p 127.0.0.1:8889:8888 -p 127.0.0.1:7861:7860
+# ============================================================================
+FROM abdelghafour1/ai-studio:latest
+
+COPY solutions/           /opt/course/materials/solutions/
+COPY scripts/             /opt/course/materials/scripts/
+COPY INSTRUCTOR_GUIDE.md  /opt/course/materials/
+COPY ai_studio/models/    /opt/course/materials/ai_studio/models/

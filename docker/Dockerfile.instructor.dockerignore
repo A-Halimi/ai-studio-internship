@@ -1,0 +1,12 @@
+# dockerignore for the INSTRUCTOR image only (BuildKit picks this file
+# because it sits next to Dockerfile.instructor). Unlike the root
+# .dockerignore, it deliberately ALLOWS solutions/ and trained models.
+.git
+.gitattributes
+.gitignore
+.smoke_out
+data
+assets
+docker/cifar-10-python.tar.gz
+**/__pycache__
+**/.ipynb_checkpoints
