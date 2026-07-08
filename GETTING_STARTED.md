@@ -117,12 +117,30 @@ reveal single blocks when someone is truly stuck, never the file.
    `docker pull abdelghafour1/ai-studio:latest`, then redo step 3 —
    your work is safe in `my-ai-studio`.)
 
-   **Prefer host networking?** Replace the `-p …` flags with `--network host`
-   (Linux works as-is; on Docker Desktop first enable *Settings → Resources →
-   Network → "Enable host networking"*). Every container port then becomes
-   reachable with no mapping — but JupyterLab (which has no password) is exposed
-   to your whole Wi-Fi/LAN, so only do this on a trusted network. Exact commands
-   are in README "Mode A".
+   **Prefer host networking?** Drop the two `-p …` port flags and add
+   `--network host` instead — then *every* port the container opens is reachable
+   (handy if a notebook's Gradio app lands on 7861 because 7860 is busy). On
+   Docker Desktop (Windows/macOS) first enable *Settings → Resources → Network →
+   "Enable host networking"* (Docker Desktop 4.34+); on Linux it works as-is.
+
+   **Windows (PowerShell):**
+   ```powershell
+   docker run -d --name ai-studio --gpus all --ipc=host --network host `
+     -v "${PWD}\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+   ```
+   **Windows (Command Prompt / cmd):**
+   ```bat
+   docker run -d --name ai-studio --gpus all --ipc=host --network host ^
+     -v "%cd%\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+   ```
+   **macOS / Linux:**
+   ```bash
+   docker run -d --name ai-studio --gpus all --ipc=host --network host \
+     -v "$PWD/my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+   ```
+   Open the same **<http://127.0.0.1:8888>** / **<http://127.0.0.1:7860>**.
+   ⚠️ JupyterLab here has **no password**, and `--network host` puts it on your
+   whole Wi-Fi/LAN (not just this machine) — use it only on a trusted network.
 
 ### Way 2 — Google Colab (zero install, free GPU in the browser)
 
