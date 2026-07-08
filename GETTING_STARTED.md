@@ -117,6 +117,13 @@ reveal single blocks when someone is truly stuck, never the file.
    `docker pull abdelghafour1/ai-studio:latest`, then redo step 3 —
    your work is safe in `my-ai-studio`.)
 
+   **Prefer host networking?** Replace the `-p …` flags with `--network host`
+   (Linux works as-is; on Docker Desktop first enable *Settings → Resources →
+   Network → "Enable host networking"*). Every container port then becomes
+   reachable with no mapping — but JupyterLab (which has no password) is exposed
+   to your whole Wi-Fi/LAN, so only do this on a trusted network. Exact commands
+   are in README "Mode A".
+
 ### Way 2 — Google Colab (zero install, free GPU in the browser)
 
 1. You need a Google account. Open the day's notebook via its link:

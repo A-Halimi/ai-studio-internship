@@ -68,6 +68,34 @@ docker run -d --name ai-studio --gpus all --ipc=host \
 Then open **<http://127.0.0.1:8888>** (JupyterLab, no token). Gradio apps:
 **<http://127.0.0.1:7860>**.
 
+**Alternative — host networking (no `-p`; every container port reachable).**
+Swap the two `-p …` flags for `--network host`. Useful when a notebook opens a
+second app (e.g. Gradio falls back to 7861 when 7860 is busy): with host
+networking *every* port the container opens is reachable, no mapping needed.
+
+*Linux:*
+```bash
+docker run -d --name ai-studio --gpus all --ipc=host --network host \
+  -v "$PWD/my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+```
+
+*Windows (PowerShell) / macOS — Docker Desktop:* first enable
+**Settings → Resources → Network → "Enable host networking"** (Docker Desktop
+4.34+), then drop the `-p` lines and add `--network host`:
+```powershell
+docker run -d --name ai-studio --gpus all --ipc=host --network host `
+  -v "${PWD}\my-ai-studio:/workspace" abdelghafour1/ai-studio:latest
+```
+
+Open the same **<http://127.0.0.1:8888>** / **<http://127.0.0.1:7860>**.
+
+> ⚠️ **Security trade-off:** JupyterLab in the image runs with **no token or
+> password**. The `-p 127.0.0.1:…` commands above keep it bound to your machine
+> only; `--network host` exposes it on **every** network interface, so anyone on
+> the same Wi-Fi/LAN can open it and run code. Use host networking only on a
+> trusted network or a single-user machine — the published-port commands stay
+> the safer classroom default.
+
 **Every day after** — no long command needed:
 ```
 docker start ai-studio      # continue where you left off
