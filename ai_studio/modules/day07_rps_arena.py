@@ -47,9 +47,14 @@ def render(models_dir):
 
     def play(img, score, cheat):
         if img is None:
-            return "📷 Take a photo of your hand first!", score, _fmt(score), {}
-        with torch.no_grad():
-            probs = torch.softmax(model(preprocess(img))[0], dim=0)
+            return ("📷 No photo yet — click the webcam **capture** button, or use "
+                    "the **Upload** tab (opens the camera on phones).",
+                    score, _fmt(score), {})
+        try:
+            with torch.no_grad():
+                probs = torch.softmax(model(preprocess(img))[0], dim=0)
+        except Exception as e:
+            return f"⚠️ Could not read that image: {e}", score, _fmt(score), {}
         player = labels[int(probs.argmax())]
         conf = {l: float(p) for l, p in zip(labels, probs)}
 
@@ -82,14 +87,14 @@ def render(models_dir):
         return s, _fmt(s), "New match — best of luck! 🍀", {}
 
     gr.Markdown(
-        "Rock, paper, scissors against the model **you fine-tuned on Day 7** "
-        "— it watches your hand through the camera. *(No camera? Upload a "
-        "photo instead.)*"
+        "Rock, paper, scissors against the model **you fine-tuned on Day 7**. "
+        "Give it a hand photo — **Upload** is the reliable path (on a phone it "
+        "opens the camera); the **Webcam** tab works too when your browser allows it."
     )
     score_state = gr.State({"you": 0, "ai": 0, "draws": 0})
     with gr.Row():
         with gr.Column():
-            cam = gr.Image(sources=["webcam", "upload"], type="numpy",
+            cam = gr.Image(sources=["upload", "webcam"], type="numpy",
                            label="Show your move!")
             cheat = gr.Checkbox(
                 label="😈 Cheat mode (the AI sees your move first...)",
