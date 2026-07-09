@@ -30,7 +30,7 @@ def render(models_dir):
     cfg = json.loads((models_dir / "language_lab.json").read_text(
         encoding="utf-8"))
     starters = cfg.get("story_starters") or [
-        "Deep in the KAUST lab, a student computer woke up and said",
+        "Late one night in the lab, a small robot woke up and said",
         "The last penguin on the iceberg looked at the satellite and",
     ]
     default_temp = float(cfg.get("default_temperature", 0.9))
@@ -96,7 +96,7 @@ def render(models_dir):
 
         with gr.Tab("🕳️ Guess the Word"):
             s = gr.Textbox(label="Sentence with a blank (use ___)",
-                           value="Students at KAUST love to ___ every day.")
+                           value="Students in the lab love to ___ every day.")
             o2 = gr.Label(label="The model's top guesses")
             s.submit(guess_word, s, o2)
             gr.Button("Fill the blank").click(guess_word, s, o2)
