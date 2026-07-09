@@ -6,6 +6,11 @@ The notebook exports:
   ai_studio/models/rps_labels.json       class names in training order
 Input contract: (1, 3, 224, 224), resize 256 -> center-crop 224,
 normalized with ImageNet mean/std.
+
+Webcam note: Gradio's snapshot capture returns None (a known 5+/6 regression) and
+`streaming=True` can't share a source with 'upload', so the webcam uses a
+streaming tab that keeps the latest frame in a State, and Play reads that State
+(never the Image component) — which is what avoids the queue-join 422.
 """
 TITLE = "🪨📄✂️ RPS Arena"
 REQUIRES = ["rps_arena.pt", "rps_labels.json"]
@@ -47,8 +52,8 @@ def render(models_dir):
 
     def play(img, score, cheat):
         if img is None:
-            return ("📷 No photo yet — click the webcam **capture** button, or use "
-                    "the **Upload** tab (opens the camera on phones).",
+            return ("📷 No frame yet — show your hand to the webcam for a second, "
+                    "or use the **Upload** tab.",
                     score, _fmt(score), {})
         try:
             with torch.no_grad():
@@ -88,25 +93,35 @@ def render(models_dir):
 
     gr.Markdown(
         "Rock, paper, scissors against the model **you fine-tuned on Day 7**. "
-        "Give it a hand photo — **Upload** is the reliable path (on a phone it "
-        "opens the camera); the **Webcam** tab works too when your browser allows it."
+        "Use the **Webcam** tab (live feed) or the **Upload** tab (opens the "
+        "camera on phones), then hit *Play*."
     )
     score_state = gr.State({"you": 0, "ai": 0, "draws": 0})
+    wframe = gr.State(None)          # latest live webcam frame (Play reads this, not the Image)
     with gr.Row():
         with gr.Column():
-            cam = gr.Image(sources=["upload", "webcam"], type="numpy",
-                           label="Show your move!")
+            with gr.Tabs():
+                with gr.Tab("📷 Webcam"):
+                    webcam = gr.Image(sources=["webcam"], streaming=True,
+                                      type="numpy", height=360, label="Show your move!")
+                    play_w = gr.Button("Play (webcam) 🎲", variant="primary")
+                with gr.Tab("📁 Upload"):
+                    upload = gr.Image(sources=["upload"], type="numpy",
+                                      height=360, label="Upload your move")
+                    play_u = gr.Button("Play (upload) 🎲", variant="primary")
             cheat = gr.Checkbox(
                 label="😈 Cheat mode (the AI sees your move first...)",
                 value=False)
-            with gr.Row():
-                btn = gr.Button("Play this move! 🎲", variant="primary")
-                rst = gr.Button("Reset match")
+            rst = gr.Button("Reset match")
         with gr.Column():
-            result = gr.Markdown("Show your hand to the camera and hit *Play*.")
+            result = gr.Markdown("Show your hand and hit *Play*.")
             scoreboard = gr.Markdown(_fmt({"you": 0, "ai": 0, "draws": 0}))
             conf = gr.Label(num_top_classes=3, label="What the model saw")
 
-    btn.click(play, [cam, score_state, cheat],
-              [result, score_state, scoreboard, conf])
+    webcam.stream(lambda f, cur: f if f is not None else cur,
+                  inputs=[webcam, wframe], outputs=wframe, stream_every=0.25)
+    play_w.click(play, [wframe, score_state, cheat],
+                 [result, score_state, scoreboard, conf])
+    play_u.click(play, [upload, score_state, cheat],
+                 [result, score_state, scoreboard, conf])
     rst.click(reset, None, [score_state, scoreboard, result, conf])
