@@ -147,45 +147,6 @@ Every notebook auto-detects the device; no GPU = slower, never broken.
 
 ---
 
-## Instructor: building & publishing the images
-
-Two images, built from the **repo root**:
-
-| Image | Contains | Distribution |
-|---|---|---|
-| `abdelghafour1/ai-studio:latest` | student materials, locked Studio | **public** Docker Hub — students pull this |
-| `abdelghafour1/ai-studio:instructor` | everything above **+ solutions, INSTRUCTOR_GUIDE, all scripts, pre-trained models (7/7 Studio demo)** | **local only** — never push to the public repo |
-
-```powershell
-# student image (public)
-docker build -f docker/Dockerfile -t abdelghafour1/ai-studio:latest -t abdelghafour1/ai-studio:v3 .
-docker login          # once
-docker push abdelghafour1/ai-studio:latest
-docker push abdelghafour1/ai-studio:v3
-
-# instructor image (build AFTER the student image; keep local)
-docker build -f docker/Dockerfile.instructor -t abdelghafour1/ai-studio:instructor .
-```
-
-The student image bakes student materials only — `solutions/`,
-`INSTRUCTOR_GUIDE.md` and trained models are excluded via `.dockerignore`,
-so students start with a fully locked Studio. ⚠️ Anyone can pull any tag of
-a public repo — that's why the instructor tag stays local (or goes to a
-separate *private* Docker Hub repo, see the note in
-`docker/Dockerfile.instructor`). After changing materials: rebuild both
-(fast — heavy layers are cached), re-push the student tags, and ask
-students to update per the note in Mode A.
-
-## One-time setup for the instructor
-
-1. ~~Set the GitHub URL~~ **Done** — setup cells point to
-   `https://github.com/A-Halimi/ai-studio-internship.git`.
-2. **Print handouts**: PDFs are in `handouts/pdf/` (regenerate with
-   `powershell -ExecutionPolicy Bypass -File scripts\build_pdfs.ps1`).
-3. **Present slides**: open `slides/dayNN_*.html` in any browser —
-   `F` = fullscreen, `←/→` = navigate, bottom strip = jump. Fully offline.
-4. Read `INSTRUCTOR_GUIDE.md` — per-day runbook, pitfalls, and timings —
-   and `GETTING_STARTED.md` for the day-zero checklists.
 
 ## Repository layout
 
