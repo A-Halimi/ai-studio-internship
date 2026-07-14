@@ -164,38 +164,7 @@ data_samples/    small datasets shipped with the repo (penguins, RPS photos)
 data/            big datasets, downloaded on demand (gitignored)
 ```
 
-## Maintainer scripts
 
-| Command | What it does |
-|---|---|
-| `python scripts/make_student_notebooks.py` | regenerate `notebooks/` from `solutions/` (strips `### BEGIN/END SOLUTION`, checks for leaks) |
-| `python scripts/validate_notebooks.py` | nbformat-validate every notebook |
-| `powershell -File scripts\build_pdfs.ps1` | handouts HTML → PDF (headless Chrome/Edge) |
-| `python scripts/download_data.py [--models]` | laptop dataset/model fetch |
-| in-container: `bash scripts/smoke_test.sh` | execute every solutions notebook (SMOKE_TEST=1 shrinks workloads) |
-
-Full smoke test on this machine:
-
-```powershell
-docker run --rm --gpus all --ipc=host -e SMOKE_TEST=1 `
-  -v "E:\High_school_project_v3:/workspace" ai-studio:v3 bash scripts/smoke_test.sh
-```
-
-## Troubleshooting
-
-- **Slides render garbled characters** → your editor saved them as non-UTF-8;
-  restore from git.
-- **`docker: could not select device driver`** → enable GPU in Docker Desktop
-  (Settings → Resources → WSL integration) and update the NVIDIA driver.
-- **CIFAR-10 download is glacial** → the official server throttles; our code
-  already uses a fast md5-verified mirror. In Docker it's pre-baked.
-- **Gradio app not reachable from the container** → it must be the FIRST
-  launched app (port 7860 is the one that's mapped); restart the kernel if a
-  stray app holds the port.
-- **A Studio tab shows 🔒** → that day's notebook hasn't exported its model
-  files yet — the tab names the exact missing files.
-
----
 
 *Built for the WISER summer internship. Weeks 3–4 continue with matrix
 multiplication and HPC in Julia — the students will know exactly why.* 😉
