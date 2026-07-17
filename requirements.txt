@@ -4,7 +4,7 @@
 # GPU laptop (NVIDIA, Windows/Linux): install the CUDA build of PyTorch FIRST,
 # then the rest of this file:
 #
-#   pip install torch==2.12.1 torchvision==0.27.1 --index-url https://download.pytorch.org/whl/cu126
+#   pip install torch==2.13.0 torchvision==0.27.1 --index-url https://download.pytorch.org/whl/cu126
 #   pip install -r requirements.txt
 #
 # CPU-only laptop: just run
@@ -19,7 +19,7 @@
 # in the main README; the image already contains everything.
 # ============================================================================
 
-torch==2.12.1
+torch==2.13.0
 torchvision==0.27.1
 
 # Core scientific stack
