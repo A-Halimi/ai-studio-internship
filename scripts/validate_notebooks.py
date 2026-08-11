@@ -1,3 +1,8 @@
+# =====================================================================
+#  The Lab - AI Studio Internship
+#  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
+#  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
+# =====================================================================
 """Validate every notebook in the repo against the nbformat schema.
 
     python scripts/validate_notebooks.py

@@ -1,3 +1,8 @@
+# =====================================================================
+#  The Lab - AI Studio Internship
+#  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
+#  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
+# =====================================================================
 """Day 5 module - Digit Reader.
 
 Unlocked by: solutions to Day 5 (PyTorch + MNIST).

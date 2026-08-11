@@ -1,6 +1,13 @@
+<p align="center">
+  <a href="https://ahalimi.com">
+    <img src="assets/branding/logo_portfolio_dark.webp" alt="Dr. Abdelghafour HALIMI" width="300">
+  </a>
+</p>
+
 # 🧪 AI Studio — a 2-Week High-School AI Internship
 
 **WISER Summer Internship · KAUST · July 19–30, 2026 (Sun–Thu)**
+*Designed & taught by **Dr. Abdelghafour HALIMI** · [ahalimi.com](https://ahalimi.com)*
 
 Students join *the Lab* as junior AI researchers. Each day they master one
 pillar of AI and unlock one module of their personal **AI Studio** — a growing
@@ -168,3 +175,14 @@ data/            big datasets, downloaded on demand (gitignored)
 
 *Built for the WISER summer internship. Weeks 3–4 continue with matrix
 multiplication and HPC in Julia — the students will know exactly why.* 😉
+
+---
+
+<p align="center">
+  <a href="https://ahalimi.com">
+    <img src="assets/branding/logo_portfolio_dark.webp" alt="Dr. Abdelghafour HALIMI" width="240">
+  </a>
+</p>
+
+<p align="center"><sub>© 2026 <b>Dr. Abdelghafour HALIMI</b> · <a href="https://ahalimi.com">ahalimi.com</a> · All rights reserved.<br>
+All course materials — slides, notebooks, handouts, code, and the AI Studio app — are the intellectual property of the author.</sub></p>

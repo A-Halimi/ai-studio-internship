@@ -1,3 +1,8 @@
+# =====================================================================
+#  The Lab - AI Studio Internship
+#  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
+#  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
+# =====================================================================
 """Day 7 module - RPS Arena (rock-paper-scissors vs. your own model).
 
 Unlocked by: solutions to Day 7 (transfer learning).

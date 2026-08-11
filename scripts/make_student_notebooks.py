@@ -1,3 +1,8 @@
+# =====================================================================
+#  The Lab - AI Studio Internship
+#  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
+#  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
+# =====================================================================
 """Generate the student notebooks from the solutions masters.
 
 Solutions notebooks (solutions/dayNN/*_SOLUTIONS.ipynb) are the single source

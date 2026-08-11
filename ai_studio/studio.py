@@ -1,3 +1,8 @@
+# =====================================================================
+#  The Lab - AI Studio Internship
+#  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
+#  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
+# =====================================================================
 """AI Studio - the app the interns assemble, one module per day.
 
 Each file in modules/ named day*.py is a module with three things:
@@ -102,5 +107,11 @@ def build_demo() -> gr.Blocks:
         gr.Markdown(
             "---\n*Under the hood, every one of these tabs is doing the same "
             "thing: **matrix multiplication**. Remember that in Week 3... 😉*"
+        )
+        gr.Markdown(
+            "<p style='text-align:center;font-size:0.8em;opacity:0.75'>"
+            "© 2026 <b>Dr. Abdelghafour HALIMI</b> · "
+            "<a href='https://ahalimi.com' target='_blank'>ahalimi.com</a> · "
+            "All rights reserved</p>"
         )
     return demo

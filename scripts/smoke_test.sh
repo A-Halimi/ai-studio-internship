@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# =====================================================================
+#  The Lab - AI Studio Internship
+#  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
+#  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
+# =====================================================================
 # Execute every SOLUTIONS notebook headlessly inside the course container.
 #
 #   docker run --rm --gpus all --ipc=host -e SMOKE_TEST=1 \

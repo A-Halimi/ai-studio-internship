@@ -1,3 +1,8 @@
+# =====================================================================
+#  The Lab - AI Studio Internship
+#  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
+#  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
+# =====================================================================
 """Bake course datasets and model weights into the Docker image at build time.
 
 Runs during `docker build` (skip with --build-arg PREFETCH=0). Everything is

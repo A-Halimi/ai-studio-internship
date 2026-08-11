@@ -223,3 +223,7 @@ Yes — `abdelghafour1/ai-studio:instructor` (built locally, never pushed to
 the public repo): the student image plus `solutions/`, the instructor
 guide, all maintainer scripts, and pre-trained models so the finished 7/7
 Studio can be demoed on Day 1 without training anything.
+
+---
+
+<p align="center"><sub>© 2026 <b>Dr. Abdelghafour HALIMI</b> · <a href="https://ahalimi.com">ahalimi.com</a> · All rights reserved.</sub></p>
