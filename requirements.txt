@@ -57,7 +57,7 @@ imageio[ffmpeg]==2.37.3
 pillow>=10.0
 
 # Notebooks
-jupyterlab==4.6.1
+jupyterlab==4.6.2
 
 # Utilities (float - transitive deps of the pins above)
 tqdm>=4.66
