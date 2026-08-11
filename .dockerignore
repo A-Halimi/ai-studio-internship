@@ -7,7 +7,8 @@
 data
 solutions
 INSTRUCTOR_GUIDE.md
-assets
+assets/*
+!assets/branding
 
 # Students must unlock modules themselves - never ship trained models.
 ai_studio/models/*

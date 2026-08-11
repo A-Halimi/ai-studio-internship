@@ -68,6 +68,7 @@ COPY ai_studio/       /opt/course/materials/ai_studio/
 COPY data_samples/    /opt/course/materials/data_samples/
 COPY scripts/download_data.py /opt/course/materials/scripts/download_data.py
 COPY requirements.txt README.md GETTING_STARTED.md /opt/course/materials/
+COPY assets/branding/  /opt/course/materials/assets/branding/
 
 ENV GRADIO_SERVER_NAME=0.0.0.0
 WORKDIR /workspace
