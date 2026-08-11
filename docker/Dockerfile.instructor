@@ -25,5 +25,4 @@ FROM abdelghafour1/ai-studio:latest
 
 COPY solutions/           /opt/course/materials/solutions/
 COPY scripts/             /opt/course/materials/scripts/
-COPY INSTRUCTOR_GUIDE.md  /opt/course/materials/
 COPY ai_studio/models/    /opt/course/materials/ai_studio/models/
