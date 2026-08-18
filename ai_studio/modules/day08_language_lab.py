@@ -1,5 +1,5 @@
 # =====================================================================
-#  The Lab - AI Studio Internship
+#  The Lab · AI Studio — Intro to AI
 #  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
 #  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
 # =====================================================================
@@ -81,7 +81,7 @@ def render(models_dir):
     with gr.Tabs():
         with gr.Tab("😊 Mood Meter"):
             t = gr.Textbox(label="Write a sentence",
-                           placeholder="This internship is awesome!")
+                           placeholder="This course is awesome!")
             o = gr.Label(label="Detected mood")
             t.submit(mood, t, o)
             gr.Button("Read the mood").click(mood, t, o)

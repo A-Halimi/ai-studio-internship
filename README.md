@@ -4,30 +4,31 @@
   </a>
 </p>
 
-# 🧪 AI Studio — a 2-Week High-School AI Internship
+# 🧪 AI Studio — Intro to AI
 
-**WISER Summer Internship · KAUST · July 19–30, 2026 (Sun–Thu)**
+**The Lab · ten days, seven modules, one Studio**
 *Designed & taught by **Dr. Abdelghafour HALIMI** · [ahalimi.com](https://ahalimi.com)*
 
-Students join *the Lab* as junior AI researchers. Each day they master one
+A hands-on, 10-day introduction to AI. Students join *the Lab* as AI
+explorers. Each day they master one
 pillar of AI and unlock one module of their personal **AI Studio** — a growing
 web app. Day 10 is **Demo Day**: they assemble all seven modules, present
 live, and run the *Grand Benchmark* that reveals the single operation
-underneath everything — **matrix multiplication** — the perfect handoff to
-Weeks 3–4 (HPC with Julia).
+underneath everything — **matrix multiplication** — and why making it *fast*
+is a whole field of its own (high-performance computing).
 
-| Day | Date | Topic | Studio module unlocked |
-|----:|------|-------|------------------------|
-| 1 | Sun Jul 19 | Welcome to the Lab — data literacy + AI wow demos | — |
-| 2 | Mon Jul 20 | Supervised learning (k-NN, trees) | 🐧 Prediction Machine |
-| 3 | Tue Jul 21 | Unsupervised learning (k-means, PCA, t-SNE) | 🎨 Pattern Finder |
-| 4 | Wed Jul 22 | Neural network from scratch (NumPy) | — (the engine day) |
-| 5 | Thu Jul 23 | PyTorch + GPU, MNIST | ✍️ Digit Reader |
-| 6 | Sun Jul 26 | CNNs, CIFAR-10 | 🕵️ Photo Detective |
-| 7 | Mon Jul 27 | Transfer learning (webcam rock-paper-scissors) | ✂️ RPS Arena |
-| 8 | Tue Jul 28 | Transformers & LLMs | 💬 Language Lab |
-| 9 | Wed Jul 29 | Reinforcement learning | 🎮 Game Master |
-| 10 | Thu Jul 30 | **Demo Day** + the road to HPC | 🚀 everything |
+| Day | Topic | Studio module unlocked |
+|----:|-------|------------------------|
+| 1 | Welcome to the Lab — data literacy + AI wow demos | — |
+| 2 | Supervised learning (k-NN, trees) | 🐧 Prediction Machine |
+| 3 | Unsupervised learning (k-means, PCA, t-SNE) | 🎨 Pattern Finder |
+| 4 | Neural network from scratch (NumPy) | — (the engine day) |
+| 5 | PyTorch + GPU, MNIST | ✍️ Digit Reader |
+| 6 | CNNs, CIFAR-10 | 🕵️ Photo Detective |
+| 7 | Transfer learning (webcam rock-paper-scissors) | ✂️ RPS Arena |
+| 8 | Transformers & LLMs | 💬 Language Lab |
+| 9 | Reinforcement learning | 🎮 Game Master |
+| 10 | **Demo Day** + the road to HPC | 🚀 everything |
 
 Daily rhythm: **morning briefing** (interactive HTML deck in `slides/`) →
 **lab time** (notebook in `notebooks/dayNN/`) → **evening show & tell**
@@ -173,8 +174,8 @@ data/            big datasets, downloaded on demand (gitignored)
 
 
 
-*Built for the WISER summer internship. Weeks 3–4 continue with matrix
-multiplication and HPC in Julia — the students will know exactly why.* 😉
+*After Day 10, the natural next step is high-performance computing — and
+your students will know exactly why.* 😉
 
 ---
 

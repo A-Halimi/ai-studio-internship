@@ -1,10 +1,10 @@
 # =====================================================================
-#  The Lab - AI Studio Internship
+#  The Lab · AI Studio — Intro to AI
 #  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
 #  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
 # =====================================================================
 # ============================================================================
-# AI Studio Internship - Python environment (laptops)
+# AI Studio — Intro to AI · Python environment (laptops)
 # ============================================================================
 # GPU laptop (NVIDIA, Windows/Linux): install the CUDA build of PyTorch FIRST,
 # then the rest of this file:

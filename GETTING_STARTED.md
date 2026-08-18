@@ -1,6 +1,6 @@
 # Getting Started — Step by Step
 
-*AI Studio Internship · WISER @ KAUST · July 19–30, 2026*
+*AI Studio — Intro to AI · The Lab*
 Repo: <https://github.com/A-Halimi/ai-studio-internship> · Image: `abdelghafour1/ai-studio`
 
 ---
@@ -9,7 +9,7 @@ Repo: <https://github.com/A-Halimi/ai-studio-internship> · Image: `abdelghafour
 
 ### Once, before Day 1 (≈ 1 hour, mostly waiting)
 
-1. **Get the materials & images ready** *(already done on the E:\ workstation)*
+1. **Get the materials & images ready**
    ```powershell
    git clone https://github.com/A-Halimi/ai-studio-internship.git
    cd ai-studio-internship
@@ -33,15 +33,15 @@ Repo: <https://github.com/A-Halimi/ai-studio-internship> · Image: `abdelghafour
    ```powershell
    docker run --rm --gpus all --ipc=host `
      -p 127.0.0.1:8888:8888 -p 127.0.0.1:7860:7860 `
-     -v "E:\ai-studio-test:/workspace" abdelghafour1/ai-studio:latest
+     -v "${PWD}\ai-studio-test:/workspace" abdelghafour1/ai-studio:latest
    ```
    Open <http://127.0.0.1:8888> — you should see `notebooks/`, `slides/`,
-   `ai_studio/` etc. appear in the (initially empty) `E:\ai-studio-test`.
+   `ai_studio/` etc. appear in the (initially empty) `ai-studio-test` folder.
 
 3. **Smoke-test the answer key** (from the repo, which has `solutions/`):
    ```powershell
    docker run --rm --gpus all --ipc=host -e SMOKE_TEST=1 `
-     -v "E:\High_school_project_v3:/workspace" abdelghafour1/ai-studio:latest `
+     -v "${PWD}:/workspace" abdelghafour1/ai-studio:latest `
      bash scripts/smoke_test.sh
    ```
    Expect: `11 passed, 0 failed`. Side effect: trained model files land in

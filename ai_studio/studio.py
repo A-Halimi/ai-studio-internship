@@ -1,5 +1,5 @@
 # =====================================================================
-#  The Lab - AI Studio Internship
+#  The Lab · AI Studio — Intro to AI
 #  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
 #  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
 # =====================================================================
@@ -106,7 +106,7 @@ def build_demo() -> gr.Blocks:
                             )
         gr.Markdown(
             "---\n*Under the hood, every one of these tabs is doing the same "
-            "thing: **matrix multiplication**. Remember that in Week 3... 😉*"
+            "thing: **matrix multiplication**. Remember that name... 😉*"
         )
         gr.Markdown(
             "<p style='text-align:center;font-size:0.8em;opacity:0.75'>"

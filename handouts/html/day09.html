@@ -189,7 +189,7 @@ ul.board .d{color:var(--ink-3);font-size:8.7pt}
     <h1>Machines That Act</h1>
     <div class="sub">Reinforcement learning — learning from reward, not answers</div>
     <div class="meta">
-      <span class="date">Wednesday · July 29, 2026</span>
+      <span class="date">Day 09 · Week 2</span>
       <span class="chip chip-unlock">Unlocks 🎮 Game Master</span>
     </div>
   </header>
@@ -216,7 +216,7 @@ ul.board .d{color:var(--ink-3);font-size:8.7pt}
     </figure>
     <p><b class="hi">The Q-table is a tiny instinct.</b> For FrozenLake there are 16 tiles × 4 moves = 64 numbers, each saying "how good is this move from here?" <b>ε-greedy</b> mostly takes the best-known move (exploit) but a fraction ε of the time tries something random (explore). And the whole thing learns from one line — the <b>Q-learning law</b>: <code>new = old + α(reward + γ·best-future − old)</code>, nudging each estimate a step toward reality.</p>
     <p><b class="hi">When tables explode → DQN.</b> CartPole's state is continuous — infinite rows. So replace the table with a neural network that <i>predicts</i> Q-values. Same idea, far bigger brain.</p>
-    <div class="mwatch"><b>🧮 Matrix Watch —</b> your Q-table is a 16×4 matrix, and the DQN that replaces it is just layers of matrix multiplies predicting the same Q-values. Same operation, bigger — and Week 3 makes it fast.</div>
+    <div class="mwatch"><b>🧮 Matrix Watch —</b> your Q-table is a 16×4 matrix, and the DQN that replaces it is just layers of matrix multiplies predicting the same Q-values. Same operation, bigger — and high-performance computing makes it fast.</div>
   </section>
 
   <section>
@@ -289,7 +289,7 @@ ul.board .d{color:var(--ink-3);font-size:8.7pt}
   </section>
 
   <section class="tonight">
-    <h2 class="sec"><span class="sec-n">7</span> Tonight's show &amp; tell</h2>
+    <h2 class="sec"><span class="sec-n">7</span> Show &amp; tell</h2>
     <ol class="qs">
       <li>Walk us through your Q-learning update line — what does each term actually do?</li>
       <li>What ε did you use, and what happened when you set ε = 0 (pure greedy)?</li>

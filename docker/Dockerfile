@@ -1,10 +1,10 @@
 # =====================================================================
-#  The Lab - AI Studio Internship
+#  The Lab · AI Studio — Intro to AI
 #  Author: Dr. Abdelghafour HALIMI  |  https://ahalimi.com
 #  Copyright (c) 2026 Dr. Abdelghafour HALIMI. All rights reserved.
 # =====================================================================
 # ============================================================================
-# AI Studio Internship - all-in-one GPU JupyterLab image WITH course materials
+# AI Studio — Intro to AI · all-in-one GPU JupyterLab image WITH course materials
 #
 # Build (from the REPO ROOT, not from docker/):
 #   docker build -f docker/Dockerfile -t abdelghafour1/ai-studio:latest .
